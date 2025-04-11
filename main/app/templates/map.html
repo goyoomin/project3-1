@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>지도 페이지</title>
+</head>
+<body>
+    <h1>{{ location.name }} 위치</h1>
+    <p>위도: {{ location.latitude }}</p>
+    <p>경도: {{ location.longitude }}</p>
+
+    <!-- 실제 지도를 넣고 싶다면 다음을 참고 -->
+    <iframe
+        width="600"
+        height="450"
+        style="border:0"
+        loading="lazy"
+        allowfullscreen
+        src="https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q={{ location.latitude }},{{ location.longitude }}">
+    </iframe>
+</body>
+</html>
