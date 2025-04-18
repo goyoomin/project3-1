@@ -1,21 +1,135 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title>지도 페이지</title>
+    <meta charset="UTF-8">
+    <title>MAP - 한경국립대학교</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=a7a331e4948938c1ee40b4ca14c1be83&autoload=true"></script>
 </head>
 <body>
-    <h1>{{ location.name }} 위치</h1>
-    <p>위도: {{ location.latitude }}</p>
-    <p>경도: {{ location.longitude }}</p>
+    <div class="map-container">
+        <h1>MAP</h1>
 
-    <!-- 실제 지도를 넣고 싶다면 다음을 참고 -->
-    <iframe
-        width="600"
-        height="450"
-        style="border:0"
-        loading="lazy"
-        allowfullscreen
-        src="https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q={{ location.latitude }},{{ location.longitude }}">
-    </iframe>
+        <div class="map-area">
+            <div id="map" style="width: 100%; height: 300px; border: 1px solid #ccc; border-radius: 10px;"></div>
+        </div>
+
+        <div class="building-header">
+            <div id="current-building" class="current-building-info">
+                {% if selected_building %}
+                    <div class="selected-name">{{ selected_building.name }}</div>
+                    <div class="selected-desc">{{ selected_building.description }}</div>
+                {% else %}
+                    <div class="selected-name">학생회관</div>
+                    <div class="selected-desc">어깨구름터 위치, 학생활동 및 식당, 카페 위치</div>
+                {% endif %}
+            </div>
+            <button class="find-path-btn" onclick="findPath()">길찾기</button>
+        </div>
+
+        <div class="buildings">
+            {% for building in buildings %}
+            <div class="building-item"
+                 data-id="{{ building.id }}"
+                 data-lat="{{ building.lat }}"
+                 data-lng="{{ building.lng }}"
+                 onclick="selectBuilding(this)">
+                {{ building.name }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        let map;
+        let marker;
+        let selectedBuildingId = "{{ selected_building.id if selected_building else 'student_union' }}";
+
+        function initMap() {
+            const campusCenter = new kakao.maps.LatLng(37.0157, 127.2701);
+
+            map = new kakao.maps.Map(document.getElementById('map'), {
+                center: campusCenter,
+                level: 3
+            });
+
+            const markerImage = new kakao.maps.MarkerImage(
+                'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
+                new kakao.maps.Size(24, 35)
+            );
+
+            marker = new kakao.maps.Marker({
+                position: campusCenter,
+                map: map,
+                image: markerImage
+            });
+
+            if (selectedBuildingId) {
+                highlightBuilding(selectedBuildingId);
+            }
+        }
+
+        function selectBuilding(element) {
+            const buildingId = element.dataset.id;
+            selectedBuildingId = buildingId;
+
+            const prev = document.querySelector('.building-item.selected');
+            if (prev) prev.classList.remove('selected');
+            element.classList.add('selected');
+
+            const lat = parseFloat(element.dataset.lat);
+            const lng = parseFloat(element.dataset.lng);
+            moveMarker(lat, lng);
+
+            fetch(`/map/select/${buildingId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const currentBuilding = document.getElementById('current-building');
+                    if (data.success) {
+                        currentBuilding.innerHTML = `
+                            <div class="selected-name">${data.name}</div>
+                            <div class="selected-desc">${data.description}</div>
+                        `;
+                    }
+                });
+        }
+
+        function highlightBuilding(buildingId) {
+            const element = document.querySelector(`.building-item[data-id="${buildingId}"]`);
+            if (!element) return;
+
+            element.classList.add('selected');
+
+            const lat = parseFloat(element.dataset.lat);
+            const lng = parseFloat(element.dataset.lng);
+            moveMarker(lat, lng);
+        }
+
+        function moveMarker(lat, lng) {
+            const position = new kakao.maps.LatLng(lat, lng);
+            marker.setPosition(position);
+            map.setCenter(position);
+        }
+
+        function findPath() {
+            if (!selectedBuildingId) {
+                alert('건물을 먼저 선택해주세요!');
+                return;
+            }
+            alert('아직 구현되지 않았습니다.');  // ✅ 안내 메시지 추가
+            // window.location.href = `/map/path/${selectedBuildingId}`;  ← 현재 미구현
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof kakao !== 'undefined') {
+                initMap();
+            } else {
+                console.error("카카오맵이 로드되지 않았습니다. API 키 또는 도메인을 확인하세요.");
+            }
+        });
+    </script>
+    
 </body>
 </html>
