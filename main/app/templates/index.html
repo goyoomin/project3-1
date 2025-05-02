@@ -1,5 +1,18 @@
+<!-- main/app/templates/index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title> 페이지</title>
+    <meta charset="UTF-8">
+    <title>캠픽 - 메인 페이지</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+<body>
+    <h1>🎓 캠픽 메인 페이지</h1>
+    <div class="grid-container">
+        <a href="/map" class="tile">📍 지도</a>
+        <a href="/food" class="tile">🍱 학식</a>
+        <a href="/timetable" class="tile">📅 시간표</a>
+        <a href="/todolist" class="tile">📝 할일</a>
+    </div>
+</body>
+</html>
