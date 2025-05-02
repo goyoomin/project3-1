@@ -3,38 +3,102 @@
 <head>
   <meta charset="UTF-8">
   <title>To Do List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
+    /* ✅ 전체 영역 세팅 */
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      width: 100%;
       background-color: #F8FAFC;
       color: #2E2E2E;
-      margin: 0;
-      padding: 20px;
+      font-family: 'Arial', sans-serif;
     }
+
+    *, *::before, *::after {
+      box-sizing: border-box;  /* ✅ 패딩 포함해서 크기 계산 */
+    }
+
+    #current-time {
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-size: 14px;
+    }
+
     .container {
-      max-width: 500px;
-      margin: 0 auto;
+      width: 100%;
+      max-width: 480px;
+      margin: 60px auto 0 auto;
       background-color: white;
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
+
     h1 {
       text-align: center;
       color: #2E2E2E;
+      margin-bottom: 15px;
     }
+
+    .calendar-link {
+      text-align: center;
+      margin: 10px 0 20px 0;
+    }
+
+    .calendar-link button {
+      background-color: #D6D6F5;
+      color: #2E2E2E;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .progress-bar {
+      background: #D6D6F5;
+      border-radius: 8px;
+      overflow: hidden;
+      height: 20px;
+      margin-bottom: 10px;
+    }
+
+    .progress-fill {
+      background: #AFCBFF;
+      height: 100%;
+      text-align: center;
+      color: #2E2E2E;
+      font-weight: bold;
+      line-height: 20px;
+      transition: width 0.3s;
+    }
+
+    .stats {
+      font-size: 14px;
+      color: #9AA5B1;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
     form {
       display: flex;
       flex-direction: column;
       gap: 10px;
       margin-bottom: 20px;
     }
-    input[type="text"], input[type="date"] {
+
+    input[type="text"], select {
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 6px;
       background-color: #F8FAFC;
+      font-size: 16px;
     }
+
     button {
       background-color: #AFCBFF;
       color: #2E2E2E;
@@ -43,7 +107,9 @@
       border-radius: 6px;
       cursor: pointer;
       font-weight: bold;
+      font-size: 16px;
     }
+
     .card {
       background-color: #F8FAFC;
       border-left: 5px solid #D6D6F5;
@@ -53,25 +119,32 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
     }
+
     .card.done {
       text-decoration: line-through;
       opacity: 0.6;
     }
+
     .left {
       display: flex;
       align-items: flex-start;
       gap: 10px;
+      flex: 1;
     }
+
     .d-day {
       color: #FFA69E;
       font-weight: bold;
       font-size: 14px;
     }
+
     .memo {
       font-size: 12px;
       color: #9AA5B1;
     }
+
     .priority {
       font-size: 12px;
       background-color: #D6D6F5;
@@ -80,28 +153,79 @@
       border-radius: 4px;
       margin-left: 6px;
     }
+
+    .actions form {
+      display: inline;
+    }
+
+    .actions button {
+      font-size: 14px;
+      margin-left: 5px;
+      background-color: transparent;
+    }
+
+    /* 🔸 모바일 반응형 */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 20px;
+      }
+
+      input, select, button {
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      .d-day {
+        font-size: 12px;
+      }
+
+      .priority, .memo {
+        font-size: 11px;
+      }
+
+      .progress-fill {
+        font-size: 12px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div id="current-time">🕒 --:--</div>
+
   <div class="container">
     <h1>📋 To Do List</h1>
 
+    <!-- 📅 캘린더 보기 버튼 -->
+    <div class="calendar-link">
+      <form action="{{ url_for('todolist.calendar_view') }}">
+        <button type="submit">📅 캘린더 보기</button>
+      </form>
+    </div>
+
+    <!-- 진행률 바 -->
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: {{ progress }}%;">{{ progress }}%</div>
+    </div>
+
+    <!-- 통계 -->
+    <div class="stats">
+      📈 이번 주 추가된 일: {{ added_this_week }}개 / 완료한 일: {{ done_this_week }}개
+    </div>
+
+    <!-- 할 일 추가 -->
     <form method="POST">
       <input type="text" name="title" placeholder="할 일을 입력하세요" required>
-      <input type="date" name="due" required>
+      <input type="text" id="due" name="due" placeholder="날짜 선택" required>
+      <select name="priority">
+        <option value="긴급">🔴 긴급</option>
+        <option value="보통" selected>🟡 보통</option>
+        <option value="여유">🟢 여유</option>
+      </select>
+      <input type="text" name="memo" placeholder="메모 (선택)">
       <button type="submit">➕ 추가하기</button>
     </form>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <ul>
-          {% for category, message in messages %}
-            <li style="color: #FFA69E;">{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
-
+    <!-- 할 일 목록 -->
     {% for task in tasks %}
       <div class="card {% if task.done %}done{% endif %}">
         <div class="left">
@@ -116,9 +240,36 @@
             <div class="memo">{{ task.memo }}</div>
           </div>
         </div>
+        <div class="actions">
+          <form method="POST" action="{{ url_for('todolist.delete_task', task_id=loop.index0) }}">
+            <button type="submit">🗑</button>
+          </form>
+          <form action="{{ url_for('todolist.edit_task', task_id=loop.index0) }}">
+            <button type="submit">✏️</button>
+          </form>
+        </div>
         <div class="d-day">D-{{ task.dday }}</div>
       </div>
     {% endfor %}
   </div>
+
+  <!-- 날짜 선택기 -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    flatpickr("#due", {
+      mode: "range",
+      dateFormat: "Y-m-d"
+    });
+
+    function updateTime() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      document.getElementById('current-time').textContent = `🕒 ${hours}:${minutes}`;
+    }
+
+    updateTime();
+    setInterval(updateTime, 60000);
+  </script>
 </body>
 </html>
