@@ -1,5 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title> 페이지</title>
+    <meta charset="UTF-8">
+    <title>캠픽 - 메인 페이지</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+<body>
+    <h1>🎓 캠픽 메인 페이지</h1>
+    <div class="grid-container">
+        <a href="{{ url_for('map.map_view') }}" class="tile">📍 지도</a>
+        <a href="{{ url_for('food.index') }}" class="tile">🍱 학식</a>
+        <a href="{{ url_for('timetable.index') }}" class="tile">📅 시간표</a>
+        <a href="{{ url_for('todolist.index') }}" class="tile">📝 할일</a>
+    </div>
+</body>
+</html>

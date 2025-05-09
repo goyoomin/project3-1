@@ -225,6 +225,13 @@
       <button type="submit">➕ 추가하기</button>
     </form>
 
+    <!-- 🏠 메인 페이지로 돌아가기 버튼 -->
+    <div class="back-to-main">
+      <a href="{{ url_for('main.index') }}">
+        <button>🏠 메인으로 돌아가기</button>
+      </a>
+    </div>
+
     <!-- 할 일 목록 -->
     {% for task in tasks %}
       <div class="card {% if task.done %}done{% endif %}">

@@ -4,7 +4,9 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from datetime import datetime, timedelta
 
 todolist_bp = Blueprint('todolist', __name__, url_prefix='/todolist')
+
 TASKS_FILE = "tasks.json"
+
 
 # 🔹 JSON에서 로드
 def load_tasks():
@@ -163,3 +165,4 @@ def update_date(task_id):
         save_tasks(tasks)  # ✅ 저장까지!
         return jsonify({"status": "success"}), 200
     return jsonify({"status": "fail"}), 400
+
