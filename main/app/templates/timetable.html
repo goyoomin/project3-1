@@ -1,5 +1,98 @@
-<!DOCTYPE html>
-<html>
+<!--timetsble.html-->
+
+<!doctype html>
+<html lang="ko">
 <head>
-    <title>페이지</title>
+<meta charset="utf-8">
+<title>시간표 & 플래너</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='timetable.css') }}">
 </head>
+<body>
+<div class="wrapper">
+  <h1>📅 시간표</h1>
+
+  <!-- 수업 추가 -->
+  <form class="course-form" action="{{ url_for('add_course') }}" method="post">
+    <input name="subject" placeholder="과목명" required>
+    <input name="prof"    placeholder="교수명">
+    <input name="room"    placeholder="강의실">
+    <select name="day">{% for d in days %}<option value="{{d}}">{{d}}</option>{% endfor %}</select>
+    <input name="start" placeholder="시작 (09:30)" required>
+    <input name="end"   placeholder="종료 (11:00)" required>
+    <button type="submit">수업 추가</button>
+  </form>
+
+  <!-- 시간표 -->
+  <div class="timetable-wrap">
+    <!-- 요일 헤더 -->
+    <div class="day-row">
+      <div class="corner"></div>
+      {% for d in days %}<div class="day">{{ d }}</div>{% endfor %}
+    </div>
+
+    <!-- 본체 -->
+    <div class="body-row">
+      <!-- 시간축 -->
+      <div class="time-col">
+        {% for h in hours %}<div class="time">{{ '%02d:00'|format(h) }}</div>{% endfor %}
+      </div>
+
+      <!-- 그리드 & 블록 -->
+      <div class="grid-col">
+        <div class="grid-bg"></div>
+        {% for b in blocks %}
+        <div class="block" data-id="{{ b.id }}"
+             style="left:{{ b.left }}%; top:{{ b.top }}%;
+                    width:{{ b.width }}%; height:{{ b.height }}%;"
+             onclick="openEdit(this)">
+          <strong>{{ b.subject }}</strong><br>{{ b.prof }}<br>{{ b.room }}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ───── 플래너 ───── -->
+<section class="planner">
+    <h2>📖 주간 학습 플래너</h2>
+  
+    <form class="plan-input" action="{{ url_for('add_plan') }}" method="post">
+      <input name="plan" placeholder="할 일을 입력하세요" required>
+      <button type="submit">추가</button>
+      <button type="button" id="gpt-btn">GPT 추천받기</button>
+    </form>
+  
+    <ul class="plan-list">
+      {% for p in plans %}
+      <li data-id="{{ p.id }}" class="{% if p.done %}done{% endif %}">
+        <label>
+          <input type="checkbox" {% if p.done %}checked{% endif %}
+                 onclick="togglePlan(event,this)">
+          <span>{{ p.text }}</span>
+        </label>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+  
+  <!-- 기존 GPT / 팝업 스크립트 유지 -->
+  <script>
+  /* 플래너 체크 토글 */
+  function togglePlan(ev,cb){
+    ev.stopPropagation();
+    const li=cb.closest("li"), id=li.dataset.id;
+    fetch(`/plan/${id}/toggle`,{method:"POST"}).then(()=> li.classList.toggle("done"));
+  }
+  
+  /* GPT 버튼 (변경 없음) */
+  document.getElementById("gpt-btn").onclick=async()=>{
+    const b=event.target;b.disabled=true;b.textContent="불러오는 중...";
+    try{const r=await fetch("{{ url_for('gpt') }}",{method:"POST"});
+        if(r.ok)location.reload();else alert("GPT 오류");}
+    finally{b.disabled=false;b.textContent="GPT 추천받기";}
+  };
+  
+  /* 팝업 관련 스크립트 그대로 … */
+  </script>
+  </body>
+  </html>
