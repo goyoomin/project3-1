@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>캠픽 로그인</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #2E2E2E;
+    }
+
+    .login-container {
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .login-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .login-sub {
+      font-size: 14px;
+      color: #9AA5B1;
+      margin-bottom: 24px;
+    }
+
+    .login-form input,
+    .login-form button {
+      width: 100%;
+      height: 50px;
+      border-radius: 8px;
+      font-size: 15px;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+    }
+
+    .login-form input {
+      padding: 0 14px;
+      border: 1px solid #ccc;
+    }
+
+    .login-form button {
+      background-color: #AFCBFF;
+      border: none;
+      font-weight: bold;
+      color: #2E2E2E;
+      cursor: pointer;
+    }
+
+    .login-form button:hover {
+      opacity: 0.95;
+    }
+
+    .login-links {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #9AA5B1;
+    }
+
+    .login-links a {
+      color: #9AA5B1;
+      text-decoration: none;
+      margin: 0 6px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 30px 0 20px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #ccc;
+    }
+
+    .divider span {
+      margin: 0 12px;
+      font-size: 13px;
+      color: #9AA5B1;
+      white-space: nowrap;
+    }
+
+    .social-login {
+      display: flex;
+      justify-content: center;
+    }
+
+    .kakao-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #FEE500;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .kakao-btn img {
+      width: 22px;
+      height: 22px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-title">캠픽에 오신 걸 환영합니다!</div>
+    <div class="login-sub">캠퍼스 생활을 더 편리하게 만들어드릴게요</div>
+
+    <form method="POST" class="login-form">
+      <input type="text" name="username" placeholder="아이디 입력" required>
+      <input type="password" name="password" placeholder="비밀번호 입력" required>
+      <button type="submit">로그인</button>
+    </form>
+
+    <div class="login-links">
+      <a href="#">회원가입</a> |
+      <a href="#">비밀번호 찾기</a> |
+      <a href="#">학교 계정으로</a>
+    </div>
+
+    <div class="divider">
+      <div style="flex: 1; height: 1px; background: #ccc;"></div>
+      <span style="margin: 0 12px; font-size: 13px; color: #9AA5B1;">또는</span>
+      <div style="flex: 1; height: 1px; background: #ccc;"></div>
+  </div>
+
+    <div class="social-login">
+      <a href="/login/kakao" class="kakao-btn">
+        <img src="{{ url_for('static', filename='img/kakao-icon.png') }}" alt="카카오 로그인">
+      </a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,18 +1,200 @@
-<!-- main/app/templates/index.html -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>캠픽 - 메인 페이지</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8">
+  <title>캠픽 - 메인 페이지</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://unpkg.com/feather-icons"></script> <!-- SVG 아이콘용 -->
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Arial', sans-serif;
+      background-color: #F8FAFC;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== 상단 앱바 ===== */
+    .app-bar {
+      background-color: #AFCBFF;
+      color: #2E2E2E;
+      font-weight: bold;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .app-title {
+      font-size: 20px;
+    }
+
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logout-btn {
+      background: none;
+      border: none;
+      color: #2E2E2E;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .logout-btn:hover {
+      opacity: 0.8;
+    }
+
+    /* ===== 메인 카드 영역 ===== */
+    .main-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .grid-container {
+      width: 100%;
+      max-width: 500px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
+
+    .tile {
+      background-color: white;
+      border-radius: 20px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      text-align: center;
+      padding: 32px 20px;
+      text-decoration: none;
+      color: #2E2E2E;
+      transition: all 0.3s ease;
+    }
+
+    .tile:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .tile-icon {
+      margin-bottom: 12px;
+    }
+
+    .tile-label {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    /* ===== 하단 탭바 ===== */
+    .tab-bar {
+      background-color: white;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+
+    .tab-item {
+      text-align: center;
+      font-size: 14px;
+      color: #9AA5B1;
+      transition: all 0.3s ease;
+    }
+
+    .tab-item:hover {
+      color: #2E2E2E;
+      transform: scale(1.05);
+    }
+
+    .tab-item.active {
+      color: #2E2E2E;
+      font-weight: bold;
+    }
+
+    .tab-item-icon {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 480px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>🎓 캠픽 메인 페이지</h1>
-    <div class="grid-container">
-        <a href="/map" class="tile">📍 지도</a>
-        <a href="/food" class="tile">🍱 학식</a>
-        <a href="/timetable" class="tile">📅 시간표</a>
-        <a href="/todolist" class="tile">📝 할일</a>
+
+  <!-- 상단 앱바 -->
+  <div class="app-bar">
+    <div class="app-title">캠픽</div>
+    <div class="profile-section">
+      <span>{{ session['user'] }}님</span>
+      <form action="{{ url_for('login.logout') }}" method="post">
+        <button type="submit" class="logout-btn" title="로그아웃">🚪</button>
+      </form>
     </div>
+  </div>
+
+  <!-- 메인 타일 -->
+  <div class="main-container">
+    <div class="grid-container">
+      <a href="/map" class="tile">
+        <div class="tile-icon"><i data-feather="map-pin"></i></div>
+        <div class="tile-label">지도</div>
+      </a>
+      <a href="/food" class="tile">
+        <div class="tile-icon"><i data-feather="coffee"></i></div>
+        <div class="tile-label">학식</div>
+      </a>
+      <a href="/timetable" class="tile">
+        <div class="tile-icon"><i data-feather="calendar"></i></div>
+        <div class="tile-label">시간표</div>
+      </a>
+      <a href="/todolist" class="tile">
+        <div class="tile-icon"><i data-feather="check-square"></i></div>
+        <div class="tile-label">할일</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 하단 탭바 -->
+  <div class="tab-bar">
+    <div class="tab-item active">
+      <span class="tab-item-icon"><i data-feather="home"></i></span>
+      홈
+    </div>
+    <div class="tab-item">
+      <span class="tab-item-icon"><i data-feather="settings"></i></span>
+      설정
+    </div>
+    <div class="tab-item">
+      <span class="tab-item-icon"><i data-feather="bell"></i></span>
+      공지
+    </div>
+  </div>
+
+  <script>
+    feather.replace(); // SVG 아이콘 적용
+  </script>
 </body>
 </html>

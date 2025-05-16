@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>캠픽 - 시작하기</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Arial', sans-serif;
+    }
+    body {
+      background: url("{{ url_for('static', filename='img/campick-cover.jpg') }}") no-repeat center center;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      color: white;
+      text-align: center;
+    }
+
+    .intro-overlay {
+      width: 100%;
+      padding-bottom: 80px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent 60%);
+      padding-top: 100px;
+    }
+
+    .intro-title {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      text-shadow: 0 0 5px rgba(0,0,0,0.5);
+    }
+
+    .intro-sub {
+      font-size: 16px;
+      margin-bottom: 28px;
+      text-shadow: 0 0 4px rgba(0,0,0,0.4);
+    }
+
+    .start-button {
+      background-color: #AFCBFF; /* 캠픽 시그니처 하늘색 */
+      color: #2E2E2E;
+      font-weight: bold;
+      padding: 14px 28px;
+      border-radius: 30px;
+      border: none;
+      font-size: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+    }
+
+    .start-button:hover {
+      opacity: 0.9;
+    }
+
+    .login-link {
+      font-size: 14px;
+      text-decoration: underline;
+      color: white;
+      cursor: pointer;
+      text-shadow: 0 0 3px rgba(0,0,0,0.4);
+    }
+
+    .login-link:hover {
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="intro-overlay">
+    <div class="intro-title">Campick</div>
+    <div class="intro-sub">캠퍼스 생활을 위한 통합 서비스</div>
+
+    <form action="{{ url_for('main.index') }}">
+      <button type="submit" class="start-button">캠픽 체험하기</button>
+    </form>
+
+    <a href="{{ url_for('login.login') }}" class="login-link">이미 캠픽 회원이라면 로그인</a>
+  </div>
+</body>
+</html>
