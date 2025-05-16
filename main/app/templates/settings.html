@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>설정</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #F8FAFC;
+      margin: 0;
+      padding: 20px;
+      color: #2E2E2E;
+    }
+
+    .settings-container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .setting-item {
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="settings-container">
+    <h2>설정</h2>
+
+    <div class="setting-item">
+      <label for="username">사용자 이름</label>
+      <input type="text" id="username" value="{{ session['user'] }}" readonly>
+    </div>
+
+    <div class="setting-item">
+      <label for="email">이메일</label>
+      <input type="email" id="email" value="user@example.com">
+    </div>
+
+    <div class="setting-item">
+      <label for="notify">알림 설정</label>
+      <select id="notify">
+        <option value="on">켜기</option>
+        <option value="off">끄기</option>
+      </select>
+    </div>
+  </div>
+</body>
+</html>

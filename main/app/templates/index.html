@@ -2,34 +2,41 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>캠픽 - 메인 페이지</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <script src="https://unpkg.com/feather-icons"></script> <!-- SVG 아이콘용 -->
+  <title>Campick - 메인</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+  <script src="https://unpkg.com/feather-icons"></script>
   <style>
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: 'Arial', sans-serif;
-      background-color: #F8FAFC;
+      font-family: 'Pretendard', sans-serif;
+      background: linear-gradient(120deg, #e3f2fd, #f8f9fa);
+      color: #2E2E2E;
       display: flex;
       flex-direction: column;
+      height: 100vh;
+      overflow-x: hidden;
     }
 
-    /* ===== 상단 앱바 ===== */
+    /* ===== 앱 바 ===== */
     .app-bar {
-      background-color: #AFCBFF;
-      color: #2E2E2E;
-      font-weight: bold;
-      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(14px);
+      background: rgba(255, 255, 255, 0.85);
+      padding: 18px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      z-index: 100;
     }
 
     .app-title {
-      font-size: 20px;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #2E2E2E;
     }
 
     .profile-section {
@@ -38,61 +45,81 @@
       gap: 12px;
     }
 
+    .profile-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
     .logout-btn {
       background: none;
       border: none;
-      color: #2E2E2E;
-      font-size: 18px;
+      font-size: 20px;
       cursor: pointer;
+      color: #444;
+      transition: transform 0.2s ease;
     }
 
     .logout-btn:hover {
-      opacity: 0.8;
+      transform: scale(1.1) rotate(-10deg);
     }
 
-    /* ===== 메인 카드 영역 ===== */
+    /* ===== 오늘의 일정 카드 ===== */
+    .today-card {
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(10px);
+      margin: 24px auto 0;
+      padding: 18px 20px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      max-width: 380px;
+      text-align: left;
+      line-height: 1.6;
+      font-size: 15px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    .today-card i {
+      margin-right: 6px;
+      color: #5b9df9;
+    }
+
+    /* ===== 메인 기능 타일 ===== */
     .main-container {
       flex: 1;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
       padding: 20px;
-      animation: fadeIn 0.8s ease-in;
-    }
-
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     .grid-container {
-      width: 100%;
-      max-width: 500px;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 24px;
+      width: 100%;
+      max-width: 380px;
+      margin-top: 28px;
     }
 
     .tile {
-      background-color: white;
+      background: rgba(255, 255, 255, 0.6);
       border-radius: 20px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      padding: 28px 16px;
       text-align: center;
-      padding: 32px 20px;
-      text-decoration: none;
       color: #2E2E2E;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
       transition: all 0.3s ease;
+      text-decoration: none;
     }
 
     .tile:hover {
-      transform: translateY(-6px) scale(1.02);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.1);
     }
 
     .tile-icon {
@@ -100,62 +127,67 @@
     }
 
     .tile-label {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
     }
 
-    /* ===== 하단 탭바 ===== */
+    /* ===== 탭 바 ===== */
     .tab-bar {
-      background-color: white;
-      border-top: 1px solid #e0e0e0;
       display: flex;
       justify-content: space-around;
+      background: rgba(255, 255, 255, 0.9);
+      border-top: 1px solid #e3e6eb;
       padding: 10px 0;
+      position: sticky;
+      bottom: 0;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
     }
 
     .tab-item {
-      text-align: center;
-      font-size: 14px;
+      font-size: 13px;
       color: #9AA5B1;
-      transition: all 0.3s ease;
+      text-align: center;
+      text-decoration: none;
+      transition: color 0.2s ease;
     }
 
-    .tab-item:hover {
-      color: #2E2E2E;
-      transform: scale(1.05);
+    .tab-item-icon {
+      margin-bottom: 4px;
     }
 
     .tab-item.active {
       color: #2E2E2E;
-      font-weight: bold;
+      font-weight: 700;
     }
 
-    .tab-item-icon {
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    @media (max-width: 480px) {
-      .grid-container {
-        grid-template-columns: 1fr;
-      }
+    .tab-item:hover {
+      color: #5b9df9;
     }
   </style>
 </head>
 <body>
 
-  <!-- 상단 앱바 -->
+  <!-- 앱바 -->
   <div class="app-bar">
-    <div class="app-title">캠픽</div>
+    <div class="app-title">Campick</div>
     <div class="profile-section">
-      <span>{{ session['user'] }}님</span>
+      <a href="{{ url_for('user.settings') }}">
+        <img src="{{ url_for('static', filename='img/profile.png') }}" class="profile-img" alt="설정">
+      </a>
       <form action="{{ url_for('login.logout') }}" method="post">
-        <button type="submit" class="logout-btn" title="로그아웃">🚪</button>
+        <button class="logout-btn" title="로그아웃">🚪</button>
       </form>
     </div>
   </div>
 
-  <!-- 메인 타일 -->
+  <!-- 오늘의 일정 카드 -->
+  <div class="today-card">
+    <i data-feather="calendar"></i> 오늘: 오후 2시 팀 미팅<br>
+    <i data-feather="clock"></i> D-3: 알고리즘 과제 마감
+  </div>
+
+  <!-- 메인 기능 타일 -->
   <div class="main-container">
     <div class="grid-container">
       <a href="{{ url_for('map.map_view') }}" class="tile">
@@ -177,24 +209,35 @@
     </div>
   </div>
 
-  <!-- 하단 탭바 -->
+  <!-- 탭바 -->
   <div class="tab-bar">
-    <div class="tab-item active">
-      <span class="tab-item-icon"><i data-feather="home"></i></span>
+    <a href="{{ url_for('main.index') }}" class="tab-item active">
+      <div class="tab-item-icon"><i data-feather="home"></i></div>
       홈
-    </div>
-    <div class="tab-item">
-      <span class="tab-item-icon"><i data-feather="settings"></i></span>
-      설정
-    </div>
-    <div class="tab-item">
-      <span class="tab-item-icon"><i data-feather="bell"></i></span>
+    </a>
+    <a href="{{ url_for('notice.index') }}" class="tab-item">
+      <div class="tab-item-icon"><i data-feather="bell"></i></div>
       공지
-    </div>
+    </a>
+    <a href="{{ url_for('user.settings') }}" class="tab-item">
+      <div class="tab-item-icon"><i data-feather="user"></i></div>
+      설정
+    </a>
   </div>
 
   <script>
-    feather.replace(); // feather icons 초기화
+    feather.replace();
+    const tabs = document.querySelectorAll('.tab-item');
+    const path = window.location.pathname;
+    tabs.forEach(tab => {
+      const linkPath = new URL(tab.href).pathname;
+      if (path === linkPath) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
+      }
+    });
   </script>
+
 </body>
 </html>

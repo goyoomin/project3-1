@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>공지사항</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #F8FAFC;
+      margin: 0;
+      padding: 20px;
+      color: #2E2E2E;
+    }
+
+    .notice-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .notice-item {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      padding: 16px;
+      margin-bottom: 16px;
+      transition: transform 0.2s;
+    }
+
+    .notice-item:hover {
+      transform: scale(1.01);
+    }
+
+    .notice-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .notice-date {
+      font-size: 12px;
+      color: #9AA5B1;
+    }
+
+    .notice-content {
+      margin-top: 8px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="notice-container">
+    <h1>📢 공지사항</h1>
+
+    <div class="notice-item">
+      <div class="notice-title">서비스 점검 안내</div>
+      <div class="notice-date">2025-05-16</div>
+      <div class="notice-content">
+        이번 주 토요일 00시부터 02시까지 서버 점검이 예정되어 있어, 해당 시간 동안 서비스 이용이 어려울 수 있습니다.
+      </div>
+    </div>
+
+    <div class="notice-item">
+      <div class="notice-title">업데이트 예정 기능 안내</div>
+      <div class="notice-date">2025-05-13</div>
+      <div class="notice-content">
+        다음주부터 '학식 알림' 기능이 추가됩니다. 설정에서 구독하시면 알림을 받을 수 있어요!
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
