@@ -158,19 +158,19 @@
   <!-- 메인 타일 -->
   <div class="main-container">
     <div class="grid-container">
-      <a href="/map" class="tile">
+      <a href="{{ url_for('map.map_view') }}" class="tile">
         <div class="tile-icon"><i data-feather="map-pin"></i></div>
         <div class="tile-label">지도</div>
       </a>
-      <a href="/food" class="tile">
+      <a href="{{ url_for('food.index') }}" class="tile">
         <div class="tile-icon"><i data-feather="coffee"></i></div>
         <div class="tile-label">학식</div>
       </a>
-      <a href="/timetable" class="tile">
+      <a href="{{ url_for('timetable.index') }}" class="tile">
         <div class="tile-icon"><i data-feather="calendar"></i></div>
         <div class="tile-label">시간표</div>
       </a>
-      <a href="/todolist" class="tile">
+      <a href="{{ url_for('todolist.index') }}" class="tile">
         <div class="tile-icon"><i data-feather="check-square"></i></div>
         <div class="tile-label">할일</div>
       </a>
@@ -194,7 +194,7 @@
   </div>
 
   <script>
-    feather.replace(); // SVG 아이콘 적용
+    feather.replace(); // feather icons 초기화
   </script>
 </body>
 </html>

@@ -1,4 +1,3 @@
-# run.py
 from flask import Flask
 from main.app.routes.main_routes import main_routes
 from main.app.routes.map_routes import map_bp
@@ -14,7 +13,7 @@ def create_app():
         template_folder='main/app/templates',
         static_folder='main/app/static'
     )
-    app.secret_key = "비밀키12345"
+    app.secret_key = "비밀키12345"  # ✅ 세션, flash 사용을 위해 꼭 필요!
 
     # 🔹 블루프린트 등록
     app.register_blueprint(main_routes)

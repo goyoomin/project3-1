@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>할 일 수정</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    body {
+      background-color: #F8FAFC;
+      font-family: 'Arial', sans-serif;
+      color: #2E2E2E;
+      padding: 20px;
+    }
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    h1 {
+      text-align: center;
+      color: #2E2E2E;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    input[type="text"], select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background-color: #F8FAFC;
+    }
+    button {
+      background-color: #AFCBFF;
+      color: #2E2E2E;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .back-link {
+      text-align: center;
+      margin-top: 16px;
+    }
+    .back-link a {
+      color: #9AA5B1;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>✏️ 할 일 수정</h1>
+
+    <form method="POST">
+      <input type="text" name="title" value="{{ task.title }}" required>
+
+      <input type="text" id="due" name="due" value="{{ task.due }}" required>
+
+      <select name="priority">
+        <option value="긴급" {% if task.priority == "긴급" %}selected{% endif %}>🔴 긴급</option>
+        <option value="보통" {% if task.priority == "보통" %}selected{% endif %}>🟡 보통</option>
+        <option value="여유" {% if task.priority == "여유" %}selected{% endif %}>🟢 여유</option>
+      </select>
+
+      <input type="text" name="memo" value="{{ task.memo }}">
+
+      <button type="submit">✅ 수정 완료</button>
+    </form>
+
+    <div class="back-link">
+      <a href="{{ url_for('todolist.index') }}">← 돌아가기</a>
+    </div>
+  </div>
+
+  <!-- flatpickr 스크립트 -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script>
+    flatpickr("#due", {
+      mode: "range",
+      dateFormat: "Y-m-d"
+    });
+  </script>
+</body>
+</html>
