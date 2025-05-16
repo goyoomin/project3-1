@@ -2,68 +2,58 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>To Do List</title>
+  <title>Campick - To Do List</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
   <style>
-    /* ✅ 전체 영역 세팅 */
     html, body {
       margin: 0;
       padding: 0;
-      overflow-x: hidden;
-      width: 100%;
-      background-color: #F8FAFC;
+      background: linear-gradient(135deg, #dceeff, #f0f4ff);
+      font-family: 'Pretendard', sans-serif;
       color: #2E2E2E;
-      font-family: 'Arial', sans-serif;
-    }
-
-    *, *::before, *::after {
-      box-sizing: border-box;  /* ✅ 패딩 포함해서 크기 계산 */
-    }
-
-    #current-time {
-      position: absolute;
-      top: 10px;
-      left: 20px;
-      font-size: 14px;
     }
 
     .container {
-      width: 100%;
-      max-width: 480px;
-      margin: 60px auto 0 auto;
-      background-color: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      max-width: 500px;
+      margin: 60px auto;
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(18px);
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
     }
 
     h1 {
       text-align: center;
+      font-size: 24px;
+      font-weight: 800;
       color: #2E2E2E;
-      margin-bottom: 15px;
+      margin-bottom: 4px;
     }
 
-    .calendar-link {
+    #current-time {
       text-align: center;
-      margin: 10px 0 20px 0;
+      font-size: 13px;
+      color: #9AA5B1;
+      margin-bottom: 24px;
     }
 
-    .calendar-link button {
-      background-color: #D6D6F5;
-      color: #2E2E2E;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
+    .card-box {
+      background: rgba(255, 255, 255, 0.6);
+      padding: 18px;
+      border-radius: 18px;
+      margin-bottom: 28px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
     }
 
     .progress-bar {
-      background: #D6D6F5;
-      border-radius: 8px;
+      background: #e0e5f7;
+      border-radius: 12px;
       overflow: hidden;
-      height: 20px;
+      height: 18px;
       margin-bottom: 10px;
     }
 
@@ -73,58 +63,71 @@
       text-align: center;
       color: #2E2E2E;
       font-weight: bold;
-      line-height: 20px;
+      line-height: 18px;
       transition: width 0.3s;
+      font-size: 13px;
     }
 
     .stats {
-      font-size: 14px;
-      color: #9AA5B1;
       text-align: center;
-      margin-bottom: 20px;
+      font-size: 13px;
+      color: #9AA5B1;
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 12px;
+      margin-bottom: 32px;
     }
 
     input[type="text"], select {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      padding: 12px;
+      border: 1px solid #d8e0eb;
+      border-radius: 10px;
       background-color: #F8FAFC;
-      font-size: 16px;
+      font-size: 15px;
     }
 
-    button {
-      background-color: #AFCBFF;
+    button, .calendar-link button, .back-to-main button {
+      background: linear-gradient(135deg, #AFCBFF, #D6D6F5);
       color: #2E2E2E;
       border: none;
-      padding: 10px;
-      border-radius: 6px;
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 15px;
       cursor: pointer;
-      font-weight: bold;
-      font-size: 16px;
+      box-shadow: 0 8px 18px rgba(175, 203, 255, 0.25);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(175, 203, 255, 0.4);
+      background: linear-gradient(135deg, #94bfff, #c5c9f9);
     }
 
     .card {
-      background-color: #F8FAFC;
+      background: rgba(255, 255, 255, 0.7);
       border-left: 5px solid #D6D6F5;
-      padding: 12px;
-      margin-bottom: 10px;
-      border-radius: 8px;
+      padding: 16px;
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: flex-start;
       flex-wrap: wrap;
+      margin-bottom: 14px;
+      transition: all 0.2s ease;
     }
 
     .card.done {
       text-decoration: line-through;
-      opacity: 0.6;
+      opacity: 0.5;
     }
 
     .left {
@@ -136,13 +139,15 @@
 
     .d-day {
       color: #FFA69E;
-      font-weight: bold;
-      font-size: 14px;
+      font-weight: 600;
+      font-size: 13px;
+      margin-top: 6px;
     }
 
     .memo {
       font-size: 12px;
       color: #9AA5B1;
+      margin-top: 4px;
     }
 
     .priority {
@@ -159,62 +164,50 @@
     }
 
     .actions button {
-      font-size: 14px;
-      margin-left: 5px;
-      background-color: transparent;
+      background: none;
+      border: none;
+      font-size: 16px;
+      margin-left: 6px;
+      cursor: pointer;
+      color: #5b6b73;
     }
 
-    /* 🔸 모바일 반응형 */
+    .calendar-link,
+    .back-to-main {
+      text-align: center;
+      margin-top: 12px;
+    }
+
     @media (max-width: 480px) {
-      h1 {
-        font-size: 20px;
-      }
-
-      input, select, button {
-        font-size: 14px;
-        padding: 10px;
-      }
-
-      .d-day {
-        font-size: 12px;
-      }
-
-      .priority, .memo {
-        font-size: 11px;
-      }
-
-      .progress-fill {
-        font-size: 12px;
-      }
+      h1 { font-size: 20px; }
+      .progress-fill { font-size: 12px; }
+      .memo, .priority, .d-day { font-size: 11px; }
     }
   </style>
 </head>
 <body>
-  <div id="current-time">🕒 --:--</div>
 
   <div class="container">
-    <h1>📋 To Do List</h1>
+    <h1><i data-feather="check-circle"></i> To Do List</h1>
+    <div id="current-time">--:--</div>
 
-    <!-- 📅 캘린더 보기 버튼 -->
+    <div class="card-box">
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: {{ progress }}%;">{{ progress }}%</div>
+      </div>
+      <div class="stats">
+        이번 주 추가: {{ added_this_week }}개 / 완료: {{ done_this_week }}개
+      </div>
+    </div>
+
     <div class="calendar-link">
       <form action="{{ url_for('todolist.calendar_view') }}">
-        <button type="submit">📅 캘린더 보기</button>
+        <button type="submit"><i data-feather="calendar"></i> 캘린더 보기</button>
       </form>
     </div>
 
-    <!-- 진행률 바 -->
-    <div class="progress-bar">
-      <div class="progress-fill" style="width: {{ progress }}%;">{{ progress }}%</div>
-    </div>
-
-    <!-- 통계 -->
-    <div class="stats">
-      📈 이번 주 추가된 일: {{ added_this_week }}개 / 완료한 일: {{ done_this_week }}개
-    </div>
-
-    <!-- 할 일 추가 -->
     <form method="POST">
-      <input type="text" name="title" placeholder="할 일을 입력하세요" required>
+      <input type="text" name="title" placeholder="할 일 제목" required>
       <input type="text" id="due" name="due" placeholder="날짜 선택" required>
       <select name="priority">
         <option value="긴급">🔴 긴급</option>
@@ -222,17 +215,9 @@
         <option value="여유">🟢 여유</option>
       </select>
       <input type="text" name="memo" placeholder="메모 (선택)">
-      <button type="submit">➕ 추가하기</button>
+      <button type="submit"><i data-feather="plus-circle"></i> 추가하기</button>
     </form>
 
-    <!-- 🏠 메인 페이지로 돌아가기 버튼 -->
-    <div class="back-to-main">
-      <a href="{{ url_for('main.index') }}">
-        <button>🏠 메인으로 돌아가기</button>
-      </a>
-    </div>
-
-    <!-- 할 일 목록 -->
     {% for task in tasks %}
       <div class="card {% if task.done %}done{% endif %}">
         <div class="left">
@@ -245,23 +230,27 @@
               <span class="priority">{{ task.priority }}</span>
             </div>
             <div class="memo">{{ task.memo }}</div>
+            <div class="d-day">D-{{ task.dday }}</div>
           </div>
         </div>
         <div class="actions">
           <form method="POST" action="{{ url_for('todolist.delete_task', task_id=loop.index0) }}">
-            <button type="submit">🗑</button>
+            <button type="submit"><i data-feather="trash-2"></i></button>
           </form>
           <form action="{{ url_for('todolist.edit_task', task_id=loop.index0) }}">
-            <button type="submit">✏️</button>
+            <button type="submit"><i data-feather="edit"></i></button>
           </form>
         </div>
-        <div class="d-day">D-{{ task.dday }}</div>
       </div>
     {% endfor %}
+
+    <div class="back-to-main">
+      <a href="{{ url_for('main.index') }}">
+        <button><i data-feather="arrow-left-circle"></i> 메인으로</button>
+      </a>
+    </div>
   </div>
 
-  <!-- 날짜 선택기 -->
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script>
     flatpickr("#due", {
       mode: "range",
@@ -270,13 +259,14 @@
 
     function updateTime() {
       const now = new Date();
-      const hours = now.getHours().toString().padStart(2, '0');
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      document.getElementById('current-time').textContent = `🕒 ${hours}:${minutes}`;
+      const hh = now.getHours().toString().padStart(2, '0');
+      const mm = now.getMinutes().toString().padStart(2, '0');
+      document.getElementById('current-time').textContent = `🕒 ${hh}:${mm}`;
     }
 
     updateTime();
     setInterval(updateTime, 60000);
+    feather.replace();
   </script>
 </body>
 </html>
