@@ -63,117 +63,36 @@ h1 {
 /* -------------------------------------------------
    [MAP 페이지] 레이아웃
 -------------------------------------------------- */
-.map-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
-  text-align: center;
+/* app/static/style.css */
+
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f7ff;
 }
 
-.map-area {
+#title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  padding: 15px;
+  background-color: #eef4ff;
+  color: #7da3d8;
+  border-bottom: 2px solid #b0c4de;
+}
+
+#map-container {
   width: 90%;
-  margin: 0 auto;
-  border: 2px solid #AFCBFF;
-  border-radius: 15px;
+  height: 60vh;
+  margin: 20px auto;
+  border: 4px solid #ccdff9;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 #map {
   width: 100%;
-  height: 300px; /* 기호에 맞춰 조정 */
+  height: 100%;
 }
 
-.building-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #D6D6F5;
-  margin-top: 10px;
-  padding: 10px;
-  width: 90%;
-  border-radius: 8px;
-}
-
-.current-building-info {
-  text-align: left;
-  color: #333;
-}
-
-.selected-name {
-  font-weight: bold;
-  font-size: 1rem;
-}
-
-.selected-desc {
-  font-size: 0.9rem;
-  margin-top: 5px;
-  color: #666;
-}
-
-.buildings {
-  width: 90%;
-  margin: 10px auto;
-  border-top: 1px solid #ccc;
-}
-
-.building-item {
-  padding: 15px;
-  border-bottom: 1px solid #ccc;
-  text-align: left;
-  background-color: #f1f5ff;
-  cursor: pointer;
-}
-
-.building-item:hover {
-  background-color: #e8eeff;
-}
-
-.building-item.selected {
-  background-color: #D6D6F5;
-}
-
-/* 반응형 */
-@media (max-width: 480px) {
-  #map {
-    height: 200px;
-  }
-}
-
-/* main/app/static/style.css */
-body {
-  background-color: #F8FAFC;
-  font-family: 'Arial', sans-serif;
-  color: #2E2E2E;
-  text-align: center;
-  margin: 0;
-  padding: 2rem;
-}
-
-h1 {
-  margin-bottom: 2rem;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.tile {
-  background-color: #AFCBFF;
-  color: #2E2E2E;
-  padding: 1.5rem;
-  border-radius: 20px;
-  text-decoration: none;
-  font-size: 1.2rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
-}
-
-.tile:hover {
-  transform: scale(1.05);
-  background-color: #D6D6F5;
-}
