@@ -211,6 +211,12 @@
       margin-top: 4px;
     }
 
+    .actions {
+      display: flex;
+      flex-direction: row;
+      gap: 4px;
+    }
+
     .actions button {
       background: none;
       border: none;
@@ -268,12 +274,21 @@
             <div class="task-info" title="{{ task.memo }}">
               {{ task.title }}
               {% if task.memo %}<div class="memo">{{ task.memo }}</div>{% endif %}
-              <div class="d-day">D-{{ task.dday }}</div>
+              <div class="d-day">
+                {% if task.dday >= 0 %}
+                  D-{{ task.dday }}
+                {% else %}
+                  D+{{ -task.dday }}
+                {% endif %}
+              </div>
             </div>
           </div>
           <div class="actions">
+            <form method="GET" action="{{ url_for('todolist.edit_task', task_id=loop.index0) }}">
+              <button title="수정"><i data-feather="edit"></i></button>
+            </form>
             <form method="POST" action="{{ url_for('todolist.delete_task', task_id=loop.index0) }}">
-              <button><i data-feather="trash-2"></i></button>
+              <button title="삭제"><i data-feather="trash-2"></i></button>
             </form>
           </div>
         </div>
