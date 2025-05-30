@@ -2,92 +2,172 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>📅 할 일 캘린더 보기</title>
-
-  <!-- FullCalendar CSS & JS -->
+  <title>캠픽 - 일정 캘린더</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-
+  <script src="https://unpkg.com/feather-icons"></script>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background-color: #F8FAFC;
-      color: #2E2E2E;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
+      margin: 0;
+      font-family: 'Pretendard', sans-serif;
+      background: linear-gradient(135deg, #eaf3ff, #f8faff);
       color: #2E2E2E;
     }
-    #calendar {
-      max-width: 900px;
+
+    .app-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: #ffffffcc;
+      backdrop-filter: blur(12px);
+      font-weight: bold;
+      font-size: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .profile-section {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    button.logout-btn {
+      background: none;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      color: #2E2E2E;
+    }
+
+    .main {
+      max-width: 720px;
       margin: 40px auto;
-      background-color: #FFFFFF;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      padding: 0 20px 60px;
     }
+
+    .calendar-box {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(14px);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    }
+
     .back {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 24px;
     }
+
     .back a {
-      color: #FFA69E;
+      display: inline-block;
+      border: 1.5px solid #AFCBFF;
+      background: #ffffff;
+      color: #2E2E2E;
+      padding: 10px 16px;
+      border-radius: 10px;
       text-decoration: none;
-      font-weight: bold;
-    }
-    .fc .fc-col-header-cell {
-      background-color: #D6D6F5;
-      color: #2E2E2E;
-      font-weight: bold;
-      border: 1px solid #ccc;
-    }
-    .fc .fc-day-today {
-      background-color: #FFA69E !important;
-      color: white;
-    }
-    .fc-event {
-      border: none;
-      color: #2E2E2E;
       font-weight: 600;
-      padding: 4px 6px;
-      border-radius: 6px;
+      transition: all 0.2s ease;
     }
-    .fc td {
-      background-color: #FFFFFF;
-      border: 1px solid #E0E0E0;
+
+    .back a:hover {
+      background: #F0F7FF;
     }
-    .fc .fc-button {
-      background-color: #D6D6F5;
-      color: #2E2E2E;
-      border: none;
-      border-radius: 6px;
+
+    .fc .fc-toolbar-title {
+      font-size: 20px;
       font-weight: bold;
-      padding: 6px 12px;
-      margin: 2px;
     }
-    .fc .fc-button-active {
+
+    .fc .fc-button {
+      background: none;
+      color: #2E2E2E;
+      border: 1.5px solid #AFCBFF;
+      border-radius: 8px;
+      font-weight: 600;
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .fc .fc-button-active,
+    .fc .fc-button:focus {
       background-color: #AFCBFF;
       color: #2E2E2E;
     }
+
     .fc .fc-button:hover {
-      background-color: #FFA69E;
-      color: white;
+      background-color: #F0F7FF;
+      border-color: #94bfff;
     }
-    .fc .fc-toolbar-title {
-      font-size: 22px;
+
+    .fc .fc-day-today {
+      background-color: #f0f4fa !important;
+    }
+
+    .fc .fc-col-header-cell {
+      background-color: #F8FAFC;
       font-weight: bold;
+    }
+
+    .fc td {
+      background-color: #ffffff;
+      border: 1px solid #E0E0E0;
+    }
+
+    .fc-event {
+      border: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 4px 6px;
+      border-radius: 6px;
       color: #2E2E2E;
+    }
+
+    /* 📌 우선순위별 파스텔 색상 */
+    .priority-긴급 {
+      background-color: #FFA69E !important;
+    }
+
+    .priority-보통 {
+      background-color: #FFF3B0 !important;
+    }
+
+    .priority-여유 {
+      background-color: #C7F9CC !important;
+    }
+
+    @media (max-width: 600px) {
+      .fc .fc-toolbar {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>📅 할 일 캘린더 보기</h1>
+  <div class="app-bar">
+    캠픽 - 캘린더
+    <div class="profile-section">
+      <form action="{{ url_for('login.logout') }}" method="post">
+        <button class="logout-btn">로그아웃</button>
+      </form>
+    </div>
+  </div>
 
-  <div id="calendar"></div>
+  <div class="main">
+    <div class="calendar-box">
+      <div id="calendar"></div>
+    </div>
 
-  <div class="back">
-    <a href="{{ url_for('todolist.index') }}">← ToDoList로 돌아가기</a>
+    <div class="back">
+      <a href="{{ url_for('todolist.index') }}">← ToDoList로 돌아가기</a>
+    </div>
   </div>
 
   <script>
@@ -108,52 +188,24 @@
           month: '월간',
           week: '주간'
         },
-        views: {
-          dayGridMonth: { buttonText: '월간' },
-          timeGridWeek: { buttonText: '주간' },
-          timeGridDay: { buttonText: '일간' }
-        },
         dayCellContent: function(arg) {
-          return arg.date.getDate();  // '1일' → '1'
+          return arg.date.getDate();
         },
-        events: [
-          {% for task in tasks %}
-            {% if task.due %}
-              {
-                id: "{{ loop.index0 }}",
-                title: "{{ task.title|e }}",
-                start: "{{ task.due.split(' to ')[0] if 'to' in task.due else task.due }}",
-                color: "{% if task.priority == '긴급' %}#FFA69E{% elif task.priority == '여유' %}#D6D6F5{% else %}#AFCBFF{% endif %}",
-                url: "{{ url_for('todolist.edit_task', task_id=loop.index0) }}",
-                memo: "{{ task.memo|e }}"
-              }{% if not loop.last %},{% endif %}
-            {% endif %}
-          {% endfor %}
-        ],
+        events: {{ tasks|tojson }},
         eventDidMount: function(info) {
+          const priority = info.event.extendedProps.priority;
+          if (priority) {
+            info.el.classList.add('priority-' + priority);
+          }
+
           const memo = info.event.extendedProps.memo;
           if (memo) {
-            const tooltip = document.createElement('div');
-            tooltip.innerText = memo;
-            tooltip.style.position = 'absolute';
-            tooltip.style.background = '#2E2E2E';
-            tooltip.style.color = 'white';
-            tooltip.style.padding = '4px 8px';
-            tooltip.style.borderRadius = '4px';
-            tooltip.style.fontSize = '12px';
-            tooltip.style.zIndex = 1000;
-            tooltip.style.display = 'none';
-            document.body.appendChild(tooltip);
-
-            info.el.addEventListener('mouseenter', function (e) {
-              tooltip.style.left = e.pageX + 10 + 'px';
-              tooltip.style.top = e.pageY + 10 + 'px';
-              tooltip.style.display = 'block';
-            });
-            info.el.addEventListener('mouseleave', function () {
-              tooltip.style.display = 'none';
-            });
+            info.el.setAttribute('title', memo);
           }
+        },
+        eventClick: function(info) {
+          const taskId = info.event.id;
+          window.location.href = `/todolist/edit/${taskId}`;
         },
         eventDrop: function(info) {
           const taskId = info.event.id;
@@ -180,6 +232,7 @@
       });
 
       calendar.render();
+      feather.replace();
     });
   </script>
 </body>

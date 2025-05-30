@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>캠픽 로그인</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
     body {
@@ -21,27 +22,28 @@
       width: 90%;
       max-width: 400px;
       text-align: center;
+      padding: 20px;
     }
 
     .login-title {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .login-sub {
-      font-size: 14px;
+      font-size: 15px;
       color: #9AA5B1;
-      margin-bottom: 24px;
+      margin-bottom: 26px;
     }
 
     .login-form input,
     .login-form button {
       width: 100%;
-      height: 50px;
-      border-radius: 8px;
-      font-size: 15px;
-      margin-bottom: 12px;
+      height: 54px;
+      border-radius: 10px;
+      font-size: 16px;
+      margin-bottom: 16px;
       box-sizing: border-box;
     }
 
@@ -64,7 +66,7 @@
 
     .login-links {
       margin-top: 10px;
-      font-size: 13px;
+      font-size: 14px;
       color: #9AA5B1;
     }
 
@@ -77,7 +79,7 @@
     .divider {
       display: flex;
       align-items: center;
-      margin: 30px 0 20px;
+      margin: 32px 0 22px;
     }
 
     .divider::before,
@@ -90,7 +92,7 @@
 
     .divider span {
       margin: 0 12px;
-      font-size: 13px;
+      font-size: 14px;
       color: #9AA5B1;
       white-space: nowrap;
     }
@@ -101,8 +103,8 @@
     }
 
     .kakao-btn {
-      width: 50px;
-      height: 50px;
+      width: 54px;
+      height: 54px;
       border-radius: 50%;
       background-color: #FEE500;
       display: flex;
@@ -112,8 +114,28 @@
     }
 
     .kakao-btn img {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
+    }
+
+    @media (max-width: 480px) {
+      .login-title {
+        font-size: 22px;
+      }
+
+      .login-sub {
+        font-size: 14px;
+      }
+
+      .login-form input,
+      .login-form button {
+        font-size: 16px;
+        height: 56px;
+      }
+
+      .login-links {
+        font-size: 13px;
+      }
     }
   </style>
 </head>
@@ -129,19 +151,18 @@
     </form>
 
     <div class="login-links">
-      <a href="#">회원가입</a> |
-      <a href="#">비밀번호 찾기</a> |
-      <a href="#">학교 계정으로</a>
+      <a href="{{ url_for('login.register') }}">회원가입</a> |
+      <a href="#">비밀번호 찾기</a>
     </div>
 
     <div class="divider">
       <div style="flex: 1; height: 1px; background: #ccc;"></div>
-      <span style="margin: 0 12px; font-size: 13px; color: #9AA5B1;">또는</span>
+      <span>또는</span>
       <div style="flex: 1; height: 1px; background: #ccc;"></div>
-  </div>
+    </div>
 
     <div class="social-login">
-      <a href="/login/kakao" class="kakao-btn">
+      <a href="{{ url_for('login.kakao_login') }}" class="kakao-btn">
         <img src="{{ url_for('static', filename='img/kakao-icon.png') }}" alt="카카오 로그인">
       </a>
     </div>

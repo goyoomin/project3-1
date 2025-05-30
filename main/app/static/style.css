@@ -319,3 +319,34 @@ h1 {
   cursor: pointer;
   font-weight: bold;
 }
+
+/* -------------------------------------------------
+   [회원가입 페이지 - 비밀번호 확인 상태]
+-------------------------------------------------- */
+input.valid {
+  border: 1px solid #28a745;
+}
+
+input.invalid {
+  border: 1px solid #d9534f;
+}
+
+.pw-check-msg {
+  font-size: 13px;
+  text-align: left;
+  margin-top: -6px;
+  margin-bottom: 6px;
+  padding-left: 4px;
+  min-height: 18px;
+  display: none;
+}
+
+.pw-check-msg.valid {
+  color: #28a745;
+  display: block;
+}
+
+.pw-check-msg.invalid {
+  color: #d9534f;
+  display: block;
+}

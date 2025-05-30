@@ -1,89 +1,143 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>캠픽 - 시작하기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <style>
-    * {
-      box-sizing: border-box;
-    }
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      font-family: 'Arial', sans-serif;
-    }
-    body {
-      background: url("{{ url_for('static', filename='img/campick-cover.jpg') }}") no-repeat center center;
-      background-size: cover;
+      background-color: #F8FAFC;
+      font-family: 'Pretendard', sans-serif;
       display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
+      justify-content: center;
       align-items: center;
-      color: white;
+      flex-direction: column;
       text-align: center;
+      color: #2E2E2E;
     }
 
-    .intro-overlay {
-      width: 100%;
-      padding-bottom: 80px;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent 60%);
-      padding-top: 100px;
+    .logo {
+      width: 120px;
+      margin-bottom: 20px;
+      animation: fadeIn 1s ease-out forwards;
     }
 
     .intro-title {
-      font-size: 32px;
-      font-weight: bold;
-      margin-bottom: 12px;
-      text-shadow: 0 0 5px rgba(0,0,0,0.5);
+      font-size: clamp(36px, 5vw, 48px);
+      font-weight: 800;
+      margin-bottom: 16px;
+      opacity: 0;
+      animation: fadeIn 1s ease-out forwards;
+      animation-delay: 0.3s;
     }
 
     .intro-sub {
-      font-size: 16px;
-      margin-bottom: 28px;
-      text-shadow: 0 0 4px rgba(0,0,0,0.4);
+      font-size: clamp(16px, 2vw, 20px);
+      color: #9AA5B1;
+      margin-bottom: 40px;
+      min-height: 24px;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid #9AA5B1;
+      font-family: 'Pretendard', monospace;
     }
 
     .start-button {
-      background-color: #AFCBFF; /* 캠픽 시그니처 하늘색 */
+      background-color: #AFCBFF;
       color: #2E2E2E;
       font-weight: bold;
-      padding: 14px 28px;
-      border-radius: 30px;
+      padding: 16px 32px;
+      border-radius: 32px;
       border: none;
-      font-size: 16px;
-      margin-bottom: 12px;
+      font-size: clamp(16px, 2vw, 18px);
       cursor: pointer;
+      margin-bottom: 20px;
+      transition: background-color 0.2s ease;
+      opacity: 0;
+      animation: fadeIn 1s ease-out forwards;
+      animation-delay: 0.8s;
     }
 
     .start-button:hover {
-      opacity: 0.9;
+      background-color: #94bfff;
     }
 
     .login-link {
-      font-size: 14px;
+      font-size: 15px;
+      color: #9AA5B1;
       text-decoration: underline;
-      color: white;
-      cursor: pointer;
-      text-shadow: 0 0 3px rgba(0,0,0,0.4);
+      opacity: 0;
+      animation: fadeIn 1s ease-out forwards;
+      animation-delay: 1.2s;
     }
 
     .login-link:hover {
+      color: #2E2E2E;
       text-decoration: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .start-button {
+        width: 90%;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="intro-overlay">
-    <div class="intro-title">Campick</div>
-    <div class="intro-sub">캠퍼스 생활을 위한 통합 서비스</div>
 
-    <form action="{{ url_for('main.index') }}">
-      <button type="submit" class="start-button">캠픽 체험하기</button>
-    </form>
+  <!-- ✅ 로고 이미지 -->
+  <img src="{{ url_for('static', filename='img/campick-logo.png') }}" alt="Campick 로고" class="logo" />
 
-    <a href="{{ url_for('login.login') }}" class="login-link">이미 캠픽 회원이라면 로그인</a>
-  </div>
+  <!-- ✅ 타이틀 -->
+  <div class="intro-title">Campick</div>
+
+  <!-- ✅ 타이핑 효과 영역 -->
+  <div class="intro-sub" id="typing-text"></div>
+
+  <!-- ✅ 시작 버튼 -->
+  <form action="{{ url_for('main.index') }}">
+    <button type="submit" class="start-button">캠픽 체험하기</button>
+  </form>
+
+  <!-- ✅ 로그인 링크 -->
+  <a href="{{ url_for('login.login') }}" class="login-link">이미 캠픽 회원이라면 로그인</a>
+
+  <!-- ✅ 반복 타이핑 효과 스크립트 (지우기 없음) -->
+  <script>
+    const typingElement = document.getElementById("typing-text");
+    const typingTexts = [
+      "캠퍼스 생활을 더 편리하게",
+      "일정을 쉽게 관리하고",
+      "나만의 계획을 추천받고",
+      "캠픽으로 시작하세요!"
+    ];
+    let textIndex = 0;
+    let charIndex = 0;
+
+    function type() {
+      const currentText = typingTexts[textIndex];
+      if (charIndex <= currentText.length) {
+        typingElement.textContent = currentText.slice(0, charIndex++);
+        setTimeout(type, 80);
+      } else {
+        setTimeout(() => {
+          charIndex = 0;
+          textIndex = (textIndex + 1) % typingTexts.length;
+          type();
+        }, 1000); // 문장 유지 시간
+      }
+    }
+
+    window.onload = type;
+  </script>
 </body>
 </html>
