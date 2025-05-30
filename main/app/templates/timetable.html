@@ -1,5 +1,417 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="ko">
+
 <head>
-    <title>페이지</title>
+  <meta charset="utf-8">
+  <title>시간표 & 플래너</title>
+  <style>
+    :root {
+      --main: #AFCBFF;
+      --point: #FFA69E;
+      --sub: #D6D6F5;
+      --bg: #F8FAFC;
+      --txt: #2E2E2E;
+      --txt-sub: #9AA5B1;
+      --border: #E2E6EE;
+      --shadow: 0 6px 14px rgba(0, 0, 0, .06);
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--txt);
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+    }
+
+    h1,
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      color: var(--txt);
+    }
+
+    h1 {
+      margin: 0 0 28px;
+      font-size: 30px;
+    }
+
+    h1::before {
+      content: "\1F4C5";
+    }
+
+    h2 {
+      margin: 8px 0 16px;
+      font-size: 20px;
+    }
+
+    h2::before {
+      content: "\1F4D6";
+    }
+
+    select,
+    input,
+    button {
+      font-size: 14px;
+      padding: 8px 11px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: 600;
+      transition: .15s;
+    }
+
+    .primary {
+      background: var(--point);
+      color: #fff;
+      border: none;
+    }
+
+    .primary:hover {
+      background: #FF9587;
+    }
+
+    .sub {
+      background: var(--sub);
+      border: none;
+    }
+
+    .course-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .timetable {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      grid-template-rows: 42px 540px;
+      margin-bottom: 16px;
+    }
+
+    .day-row {
+      grid-column: 1/3;
+      display: grid;
+      grid-template-columns: 60px repeat(7, 1fr);
+    }
+
+    .day-row .day {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .day-row .corner {
+      background: var(--bg);
+    }
+
+    .time-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .time-col .time {
+      height: 60px;
+      padding-right: 9px;
+      font-size: 12px;
+      color: var(--txt-sub);
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+
+    .grid-col {
+      position: relative;
+    }
+
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+      background-size: calc(100%/7) 100%, 100% 60px;
+    }
+
+    .block {
+      position: absolute;
+      font-size: 12px;
+      padding: 5px 7px;
+      border-radius: 6px;
+      box-sizing: border-box;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .18);
+      cursor: pointer;
+    }
+
+    .planner-card {
+      background: var(--bg);
+      padding: 18px 20px;
+      border-radius: 14px;
+      box-shadow: inset 0 0 0 1px var(--border);
+    }
+
+    .plan-input {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .plan-input input[type=date] {
+      flex-shrink: 0;
+    }
+
+    .plan-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .plan-list li {
+      background: var(--sub);
+      padding: 7px 9px;
+      border-radius: 8px;
+      margin-bottom: 7px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .plan-list li.done span {
+      text-decoration: line-through;
+      color: var(--txt-sub);
+    }
+
+    .plan-list input[type=checkbox] {
+      cursor: pointer;
+    }
+
+    .goto-todo {
+      margin-top: 20px;
+    }
+
+    .goto-todo a {
+      display: inline-block;
+      padding: 11px 18px;
+      text-decoration: none;
+      font-weight: 600;
+      background: var(--main);
+      color: var(--txt);
+      border-radius: 8px;
+      transition: .15s;
+    }
+
+    .goto-todo a:hover {
+      background: #96B8FF;
+    }
+  </style>
 </head>
+
+<body>
+  <div class="container">
+    <h1>시간표</h1>
+
+    <div id="semester-tools" style="display:none; margin-bottom:20px;">
+      <form method="post" action="/semester/add" style="margin-bottom:10px; display:flex; gap:8px;">
+        <input type="text" name="new_semester" placeholder="예: 2026-1" required>
+        <button class="sub" type="submit">학기 추가</button>
+      </form>
+      <form method="post" action="/semester/delete" style="display:flex; gap:8px;">
+        <select name="del_semester">
+          {% for s in semesters %}
+          {% if s != current_semester %}
+          <option value="{{ s }}">{{ s }}</option>
+          {% endif %}
+          {% endfor %}
+        </select>
+        <button class="sub" type="submit">삭제</button>
+      </form>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+      <form method="get" style="margin:0;">
+        <select name="semester" onchange="this.form.submit()">
+          {% for s in semesters %}
+          <option value="{{ s }}" {% if s==current_semester %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </form>
+      <button type="button" onclick="toggleSemesterTools()" class="sub">학기 관리 ▾</button>
+      <button type="button" onclick="toggleCourseForm()" class="sub">시간표 입력 ▾</button>
+    </div>
+
+    <!-- 📌 시간표 입력 폼을 토글 가능한 영역으로 감쌈 -->
+    <div id="course-form-box" style="display:none; margin-bottom:12px;">
+      <form class="course-form" action="{{ url_for('add_course') }}" method="post">
+        <input name="subject" placeholder="과목명" required>
+        <input name="prof" placeholder="교수명">
+        <input name="room" placeholder="강의실">
+        <select name="day">{% for d in days %}<option value="{{ d }}">{{ d }}</option>{% endfor %}</select>
+        <input name="start" placeholder="시작 (09:30)" required>
+        <input name="end" placeholder="종료 (11:00)" required>
+        <button type="submit" class="primary">수업 추가</button>
+      </form>
+    </div>
+
+    <div class="timetable">
+      <div class="day-row">
+        <div class="corner"></div>
+        {% for d in days %}<div class="day">{{ d }}</div>{% endfor %}
+      </div>
+      <div class="time-col">
+        {% for h in hours %}<div class="time">{{ '%02d:00'|format(h) }}</div>{% endfor %}
+      </div>
+      <div class="grid-col">
+        <div class="grid-bg"></div>
+        {% for b in blocks %}
+        <div class="block" data-id="{{ b.id }}" data-start="{{ b.start }}" data-end="{{ b.end }}" data-memo="{{ b.memo }}"
+          onclick="openEdit(this)"
+          style="left:{{ b.left }}%; top:{{ b.top }}%; width:{{ b.width }}%; height:{{ b.height }}%; background:{{ b.color }}; color:#2E2E2E;">
+          <div><strong>{{ b.subject }}</strong></div>
+          {% if b.prof %}<div>{{ b.prof }}</div>{% endif %}
+          {% if b.room %}<div>({{ b.room }})</div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    
+
+    <section class="planner-card">
+      <h2>주간 학습 플래너</h2>
+      <form class="plan-input" action="{{ url_for('add_plan') }}" method="post">
+        <input name="plan" placeholder="할 일을 입력하세요" required>
+        <input type="date" name="due">
+        <button type="submit" class="primary">추가</button>
+        <button type="button" id="gpt-btn" class="sub">GPT 추천받기</button>
+      </form>
+      <ul class="plan-list">
+        {% for p in plans %}
+        <li data-id="{{ p.id }}" class="{% if p.done %}done{% endif %}">
+          <label>
+            <input type="checkbox" {% if p.done %}checked{% endif %} onclick="togglePlan(event,this)">
+            <span>{{ p.text }}</span>
+          </label>
+          {% if p.due %}<span class="due"> ({{ p.due }})</span>{% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <div class="goto-todo">
+      <a href="{{ url_for('todolist.index') }}">📋 Todo List 보러가기</a>
+    </div>
+
+    <!-- ✨ 모달 팝업 (꼭 body 안 맨 아래에 있어야 함) -->
+    <div id="edit-modal"
+      style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:1000;">
+      <div class="modal-content"
+        style="background:white; padding:20px; width:90%; max-width:400px; margin:100px auto; border-radius:12px;">
+        <h2>강의 수정</h2>
+        <form method="POST" id="edit-course-form">
+          <input type="hidden" name="id" id="edit-id">
+          <input name="subject" id="edit-subject" placeholder="과목명" required>
+          <input name="prof" id="edit-prof" placeholder="교수명">
+          <input name="room" id="edit-room" placeholder="강의실">
+          <select name="day" id="edit-day">{% for d in days %}<option value="{{ d }}">{{ d }}</option>{% endfor
+            %}</select>
+          <input name="start" id="edit-start" placeholder="시작 (09:30)" required>
+          <input name="end" id="edit-end" placeholder="종료 (11:00)" required>
+          <input name="memo" id="edit-memo" placeholder="메모 (선택)">
+          <button class="primary" type="submit">저장</button>
+          <button class="sub" type="button" onclick="closeEdit()">취소</button>
+          <button class="sub" type="button" onclick="deleteCourse()">삭제</button>
+        </form>
+      </div>
+    </div>
+
+
+  </div>
+
+  <script>
+    function toggleSemesterTools() {
+      const box = document.getElementById("semester-tools");
+      const isVisible = box.style.display === "block";
+      box.style.display = isVisible ? "none" : "block";
+    }
+
+    function toggleCourseForm() {
+      const box = document.getElementById("course-form-box");
+      box.style.display = (box.style.display === "none") ? "block" : "none";
+    }
+
+    function togglePlan(ev, cb) {
+      ev.stopPropagation();
+      const id = cb.closest('li').dataset.id;
+      fetch(`/plan/${id}/toggle`, { method: 'POST' })
+        .then(() => location.reload());
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById('gpt-btn').onclick = async (event) => {
+        const b = event.target;
+        b.disabled = true;
+        b.textContent = '불러오는 중…';
+        try {
+          const r = await fetch("{{ url_for('gpt') }}", { method: 'POST' });
+          if (r.ok) location.reload();
+          else alert('GPT 오류');
+        } finally {
+          b.disabled = false;
+          b.textContent = 'GPT 추천받기';
+        }
+      };
+    });
+
+    function openEdit(el) {
+      const id = el.dataset.id;
+      const lines = Array.from(el.querySelectorAll('div')).map(e => e.innerText);
+      document.getElementById("edit-id").value = id;
+      document.getElementById("edit-subject").value = lines[0] || "";
+      document.getElementById("edit-prof").value = lines[1] || "";
+      document.getElementById("edit-room").value = lines[2]?.replace(/[()]/g, '') || "";
+      document.getElementById("edit-memo").value = el.dataset.memo || "";
+      document.getElementById("edit-start").value = el.dataset.start || "";
+      document.getElementById("edit-end").value = el.dataset.end || "";
+      document.getElementById("edit-course-form").action = `/edit_course/${id}`;
+      document.getElementById("edit-modal").style.display = "block";
+    }
+
+    function closeEdit() {
+      document.getElementById("edit-modal").style.display = "none";
+    }
+
+    function deleteCourse() {
+      const id = document.getElementById("edit-id").value;
+      if (confirm("정말 삭제할까요?")) {
+        fetch(`/delete_course/${id}`, { method: 'POST' })
+          .then(() => location.reload());
+      }
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeEdit();
+    });
+  </script>
+  
+</body>
+
+</html>

@@ -63,24 +63,41 @@ h1 {
 /* -------------------------------------------------
    [MAP 페이지] 레이아웃
 -------------------------------------------------- */
-.map-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
-  text-align: center;
+/* app/static/style.css */
+
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #f5f7ff;
 }
 
-.map-area {
+#title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  padding: 15px;
+  background-color: #eef4ff;
+  color: #7da3d8;
+  border-bottom: 2px solid #b0c4de;
+}
+
+#map-container {
   width: 90%;
-  margin: 0 auto;
-  border: 2px solid #AFCBFF;
-  border-radius: 15px;
+  height: 60vh;
+  margin: 20px auto;
+  border: 4px solid #ccdff9;
+  border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 #map {
   width: 100%;
+<<<<<<< HEAD
+  height: 100%;
+}
+
+=======
   height: 300px;
 }
 
@@ -350,3 +367,4 @@ input.invalid {
   color: #d9534f;
   display: block;
 }
+>>>>>>> feature/final-merge

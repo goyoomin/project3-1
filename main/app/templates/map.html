@@ -1,135 +1,107 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>MAP - 한경국립대학교</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=a7a331e4948938c1ee40b4ca14c1be83&autoload=true"></script>
+  <meta charset="utf-8">
+  <title>MAP 페이지</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="map-container">
-        <h1>MAP</h1>
 
-        <div class="map-area">
-            <div id="map" style="width: 100%; height: 300px; border: 1px solid #ccc; border-radius: 10px;"></div>
-        </div>
+  <div id="title">MAP</div>
 
-        <div class="building-header">
-            <div id="current-building" class="current-building-info">
-                {% if selected_building %}
-                    <div class="selected-name">{{ selected_building.name }}</div>
-                    <div class="selected-desc">{{ selected_building.description }}</div>
-                {% else %}
-                    <div class="selected-name">학생회관</div>
-                    <div class="selected-desc">어깨구름터 위치, 학생활동 및 식당, 카페 위치</div>
-                {% endif %}
-            </div>
-            <button class="find-path-btn" onclick="findPath()">길찾기</button>
-        </div>
+  <div id="map-container">
+    <div id="map"></div>
+  </div>
 
-        <div class="buildings">
-            {% for building in buildings %}
-            <div class="building-item"
-                 data-id="{{ building.id }}"
-                 data-lat="{{ building.lat }}"
-                 data-lng="{{ building.lng }}"
-                 onclick="selectBuilding(this)">
-                {{ building.name }}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
+  <!-- Kakao 지도 API -->
+  <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a7a331e4948938c1ee40b4ca14c1be83&autoload=true"></script>
 
-    <script>
-        let map;
-        let marker;
-        let selectedBuildingId = "{{ selected_building.id if selected_building else 'student_union' }}";
+  <!-- Python -> JS 데이터 변환 -->
+  <script type="text/javascript">
+    window.buildings = {{ buildings | tojson | safe }};
+  </script>
 
-        function initMap() {
-            const campusCenter = new kakao.maps.LatLng(37.0157, 127.2701);
+  <!-- 지도 및 다각형 생성 -->
+  <script>
+    var mapContainer = document.getElementById('map');
+    var mapOption = {
+      center: new kakao.maps.LatLng(37.0127, 127.2632),
+      level: 4
+    };
+    var map = new kakao.maps.Map(mapContainer, mapOption);
 
-            map = new kakao.maps.Map(document.getElementById('map'), {
-                center: campusCenter,
-                level: 3
-            });
+    var activeOverlay = null;
 
-            const markerImage = new kakao.maps.MarkerImage(
-                'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
-                new kakao.maps.Size(24, 35)
-            );
+    buildings.forEach(function(b) {
+      var coords = b.coords.map(function(c) {
+        return new kakao.maps.LatLng(c[0], c[1]);
+      });
 
-            marker = new kakao.maps.Marker({
-                position: campusCenter,
-                map: map,
-                image: markerImage
-            });
+      var polygon = new kakao.maps.Polygon({
+        path: coords,
+        strokeWeight: 0, // 기본은 선 없음
+        strokeColor: '#004c80',
+        strokeOpacity: 0,
+        fillColor: '#a0c8f0',
+        fillOpacity: 0.05  // ← ★ 0이 아닌 0.05 정도로 (아주 희미하게, 이벤트 살아있음)
+      });
 
-            if (selectedBuildingId) {
-                highlightBuilding(selectedBuildingId);
-            }
-        }
+      polygon.setMap(map);
 
-        function selectBuilding(element) {
-            const buildingId = element.dataset.id;
-            selectedBuildingId = buildingId;
-
-            const prev = document.querySelector('.building-item.selected');
-            if (prev) prev.classList.remove('selected');
-            element.classList.add('selected');
-
-            const lat = parseFloat(element.dataset.lat);
-            const lng = parseFloat(element.dataset.lng);
-            moveMarker(lat, lng);
-
-            fetch(`/map/select/${buildingId}`)
-                .then(response => response.json())
-                .then(data => {
-                    const currentBuilding = document.getElementById('current-building');
-                    if (data.success) {
-                        currentBuilding.innerHTML = `
-                            <div class="selected-name">${data.name}</div>
-                            <div class="selected-desc">${data.description}</div>
-                        `;
-                    }
-                });
-        }
-
-        function highlightBuilding(buildingId) {
-            const element = document.querySelector(`.building-item[data-id="${buildingId}"]`);
-            if (!element) return;
-
-            element.classList.add('selected');
-
-            const lat = parseFloat(element.dataset.lat);
-            const lng = parseFloat(element.dataset.lng);
-            moveMarker(lat, lng);
-        }
-
-        function moveMarker(lat, lng) {
-            const position = new kakao.maps.LatLng(lat, lng);
-            marker.setPosition(position);
-            map.setCenter(position);
-        }
-
-        function findPath() {
-            if (!selectedBuildingId) {
-                alert('건물을 먼저 선택해주세요!');
-                return;
-            }
-            alert('아직 구현되지 않았습니다.');  // ✅ 안내 메시지 추가
-            // window.location.href = `/map/path/${selectedBuildingId}`;  ← 현재 미구현
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof kakao !== 'undefined') {
-                initMap();
-            } else {
-                console.error("카카오맵이 로드되지 않았습니다. API 키 또는 도메인을 확인하세요.");
-            }
+      // 마우스 오버 시 강조
+      kakao.maps.event.addListener(polygon, 'mouseover', function () {
+        polygon.setOptions({
+          strokeWeight: 2,
+          strokeOpacity: 0.8,
+          fillOpacity: 0.3
         });
-    </script>
-    
+        map.getContainer().style.cursor = 'pointer';
+      });
+
+      // 마우스 아웃 시 원래대로 (fillOpacity를 0이 아닌 0.05로!)
+      kakao.maps.event.addListener(polygon, 'mouseout', function () {
+        polygon.setOptions({
+          strokeWeight: 0,
+          strokeOpacity: 0,
+          fillOpacity: 0.05  // ← ★ 여기!
+        });
+        map.getContainer().style.cursor = 'default';
+      });
+
+      // 클릭 시 정보창 표시
+      kakao.maps.event.addListener(polygon, 'click', function(mouseEvent) {
+        if (activeOverlay) {
+          activeOverlay.setMap(null);
+        }
+
+        var content = `
+          <div style="position:relative; padding:10px; background:#fff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+            <div style="position:absolute; top:5px; right:8px; cursor:pointer;" onclick="closeOverlay()">❌</div>
+            <div style="padding-top:10px;">
+              📍<strong>${b.name}</strong><br>${b.description}
+            </div>
+          </div>
+        `;
+
+        activeOverlay = new kakao.maps.CustomOverlay({
+          content: content,
+          position: mouseEvent.latLng,
+          xAnchor: 0.5,
+          yAnchor: 1.5
+        });
+
+        activeOverlay.setMap(map);
+      });
+    });
+
+    // 오버레이 닫기 함수
+    function closeOverlay() {
+      if (activeOverlay) {
+        activeOverlay.setMap(null);
+        activeOverlay = null;
+      }
+    }
+  </script>
+
 </body>
 </html>
