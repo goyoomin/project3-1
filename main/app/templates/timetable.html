@@ -1,9 +1,10 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
-
 <head>
-  <meta charset="utf-8">
-  <title>시간표 & 플래너</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>캠픽 - 시간표</title>
+  <script src="https://unpkg.com/feather-icons"></script>
   <style>
     :root {
       --main: #AFCBFF;
@@ -13,405 +14,380 @@
       --txt: #2E2E2E;
       --txt-sub: #9AA5B1;
       --border: #E2E6EE;
-      --shadow: 0 6px 14px rgba(0, 0, 0, .06);
     }
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: var(--bg);
+      background: linear-gradient(120deg, #eaf3ff, #f8faff);
+      font-family: 'Pretendard', sans-serif;
       color: var(--txt);
     }
 
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+    .app-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: #ffffffee;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
-    h1,
-    h2 {
+    .app-logo {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-weight: 700;
-      color: var(--txt);
+      font-weight: bold;
+      font-size: 22px;
+      gap: 8px;
+    }
+
+    .app-logo img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .floating-home {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 30px;
+      background-color: #ffffff;
+      border: 1px solid #d0d7de;
+      text-decoration: none;
+      color: #2E2E2E;
+      backdrop-filter: blur(6px);
+      transition: background 0.3s ease;
+    }
+
+    .floating-home:hover {
+      background-color: #F0F7FF;
+    }
+
+    .main {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 30px 20px 100px;
     }
 
     h1 {
-      margin: 0 0 28px;
-      font-size: 30px;
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
     }
 
-    h1::before {
-      content: "\1F4C5";
+    .box {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      padding: 20px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
     }
 
-    h2 {
-      margin: 8px 0 16px;
-      font-size: 20px;
-    }
-
-    h2::before {
-      content: "\1F4D6";
-    }
-
-    select,
-    input,
-    button {
+    select, input {
       font-size: 14px;
-      padding: 8px 11px;
+      padding: 10px 12px;
       border: 1px solid var(--border);
-      border-radius: 8px;
-      box-sizing: border-box;
+      border-radius: 12px;
       font-family: inherit;
     }
 
-    button {
-      cursor: pointer;
-      font-weight: 600;
-      transition: .15s;
-    }
-
-    .primary {
-      background: var(--point);
-      color: #fff;
-      border: none;
-    }
-
-    .primary:hover {
-      background: #FF9587;
-    }
-
-    .sub {
-      background: var(--sub);
-      border: none;
-    }
-
-    .course-form {
+    .flex {
       display: flex;
+      gap: 10px;
       flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 28px;
+      margin-bottom: 12px;
     }
 
-    .timetable {
-      display: grid;
-      grid-template-columns: 60px 1fr;
-      grid-template-rows: 42px 540px;
-      margin-bottom: 16px;
-    }
-
-    .day-row {
-      grid-column: 1/3;
+    .timetable-grid {
       display: grid;
       grid-template-columns: 60px repeat(7, 1fr);
+      font-size: 14px;
+      text-align: center;
     }
 
-    .day-row .day {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
+    .timetable-grid .cell {
+      border: 1px solid var(--border);
+      padding: 6px;
+      height: 60px;
     }
 
-    .day-row .corner {
+    .day-header {
+      font-weight: bold;
       background: var(--bg);
     }
 
-    .time-col {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .time-col .time {
-      height: 60px;
-      padding-right: 9px;
+    .time-cell {
+      background: #f1f5f9;
       font-size: 12px;
       color: var(--txt-sub);
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-end;
-    }
-
-    .grid-col {
-      position: relative;
-    }
-
-    .grid-bg {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-      background-size: calc(100%/7) 100%, 100% 60px;
     }
 
     .block {
       position: absolute;
-      font-size: 12px;
-      padding: 5px 7px;
-      border-radius: 6px;
-      box-sizing: border-box;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, .18);
-      cursor: pointer;
-    }
-
-    .planner-card {
-      background: var(--bg);
-      padding: 18px 20px;
-      border-radius: 14px;
-      box-shadow: inset 0 0 0 1px var(--border);
-    }
-
-    .plan-input {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .plan-input input[type=date] {
-      flex-shrink: 0;
-    }
-
-    .plan-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .plan-list li {
-      background: var(--sub);
-      padding: 7px 9px;
-      border-radius: 8px;
-      margin-bottom: 7px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-    }
-
-    .plan-list li.done span {
-      text-decoration: line-through;
-      color: var(--txt-sub);
-    }
-
-    .plan-list input[type=checkbox] {
-      cursor: pointer;
-    }
-
-    .goto-todo {
-      margin-top: 20px;
-    }
-
-    .goto-todo a {
-      display: inline-block;
-      padding: 11px 18px;
-      text-decoration: none;
-      font-weight: 600;
       background: var(--main);
-      color: var(--txt);
-      border-radius: 8px;
-      transition: .15s;
+      color: #2E2E2E;
+      font-size: 13px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      cursor: pointer;
     }
 
-    .goto-todo a:hover {
-      background: #96B8FF;
+    .calendar-link {
+      text-align: right;
+      margin-top: 30px;
+    }
+
+    .calendar-link a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: #ffffff;
+      border: 1.5px solid #AFCBFF;
+      border-radius: 30px;
+      font-weight: 500;
+      font-size: 14px;
+      text-decoration: none;
+      color: #2E2E2E;
+    }
+
+    .calendar-link a:hover {
+      background: #F0F7FF;
+    }
+
+    .d-day {
+      font-size: 12px;
+      color: var(--point);
+      margin-top: 4px;
+    }
+
+    /* 버튼 */
+    .toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: #ffffff;
+      border: 1.5px solid #AFCBFF;
+      border-radius: 30px;
+      font-weight: 500;
+      font-size: 14px;
+      text-decoration: none;
+      color: #2E2E2E;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .toggle-btn:hover {
+      background: #F0F7FF;
+    }
+
+    .add-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      background: #AFCBFF;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .add-btn:hover {
+      background: #94bfff;
+    }
+
+    .gpt-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      background: #D6D6F5;
+      color: #2E2E2E;
+      border: none;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .gpt-btn:hover {
+      background: #c5c5f0;
     }
   </style>
 </head>
-
 <body>
-  <div class="container">
-    <h1>시간표</h1>
 
-    <div id="semester-tools" style="display:none; margin-bottom:20px;">
-      <form method="post" action="/semester/add" style="margin-bottom:10px; display:flex; gap:8px;">
-        <input type="text" name="new_semester" placeholder="예: 2026-1" required>
-        <button class="sub" type="submit">학기 추가</button>
-      </form>
-      <form method="post" action="/semester/delete" style="display:flex; gap:8px;">
-        <select name="del_semester">
-          {% for s in semesters %}
-          {% if s != current_semester %}
-          <option value="{{ s }}">{{ s }}</option>
-          {% endif %}
-          {% endfor %}
-        </select>
-        <button class="sub" type="submit">삭제</button>
-      </form>
+  <div class="app-bar">
+    <div class="app-logo">
+      <img src="{{ url_for('static', filename='img/campick-logo.png') }}" alt="캠픽 로고" />
+      시간표
     </div>
+    <a href="{{ url_for('main.index') }}" class="floating-home">⌂ 메인</a>
+  </div>
 
-    <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-      <form method="get" style="margin:0;">
-        <select name="semester" onchange="this.form.submit()">
-          {% for s in semesters %}
-          <option value="{{ s }}" {% if s==current_semester %}selected{% endif %}>{{ s }}</option>
-          {% endfor %}
-        </select>
-      </form>
-      <button type="button" onclick="toggleSemesterTools()" class="sub">학기 관리 ▾</button>
-      <button type="button" onclick="toggleCourseForm()" class="sub">시간표 입력 ▾</button>
-    </div>
+  <div class="main">
+    <h1><i data-feather="calendar"></i> 나의 시간표</h1>
 
-    <!-- 📌 시간표 입력 폼을 토글 가능한 영역으로 감쌈 -->
-    <div id="course-form-box" style="display:none; margin-bottom:12px;">
-      <form class="course-form" action="{{ url_for('add_course') }}" method="post">
-        <input name="subject" placeholder="과목명" required>
-        <input name="prof" placeholder="교수명">
-        <input name="room" placeholder="강의실">
-        <select name="day">{% for d in days %}<option value="{{ d }}">{{ d }}</option>{% endfor %}</select>
-        <input name="start" placeholder="시작 (09:30)" required>
-        <input name="end" placeholder="종료 (11:00)" required>
-        <button type="submit" class="primary">수업 추가</button>
-      </form>
-    </div>
-
-    <div class="timetable">
-      <div class="day-row">
-        <div class="corner"></div>
-        {% for d in days %}<div class="day">{{ d }}</div>{% endfor %}
+    <div class="box">
+      <div class="flex">
+        <form method="get" action="{{ url_for('timetable.index') }}">
+          <select name="semester" onchange="this.form.submit()">
+            {% for s in semesters %}
+            <option value="{{ s }}" {% if s==current_semester %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </form>
+        <a href="javascript:void(0)" class="toggle-btn" onclick="toggleSemesterTools()">
+          <i data-feather="settings"></i> 학기 관리
+        </a>
+        <a href="javascript:void(0)" class="toggle-btn" onclick="toggleCourseForm()">
+          <i data-feather="plus-circle"></i> 수업 추가
+        </a>
       </div>
-      <div class="time-col">
-        {% for h in hours %}<div class="time">{{ '%02d:00'|format(h) }}</div>{% endfor %}
+
+      <div id="semester-tools" style="display:none;" class="flex">
+        <form method="post" action="{{ url_for('timetable.add_semester') }}">
+          <input type="text" name="new_semester" placeholder="예: 2026-1" required>
+          <button class="add-btn" type="submit"><i data-feather="plus-circle"></i> 추가</button>
+        </form>
+        <form method="post" action="{{ url_for('timetable.delete_semester') }}">
+          <select name="del_semester">
+            {% for s in semesters if s != current_semester %}
+            <option value="{{ s }}">{{ s }}</option>
+            {% endfor %}
+          </select>
+          <button class="gpt-btn" type="submit"><i data-feather="trash-2"></i> 삭제</button>
+        </form>
       </div>
-      <div class="grid-col">
-        <div class="grid-bg"></div>
+
+      <div id="course-form-box" style="display:none;" class="flex">
+        <form class="flex" action="{{ url_for('timetable.add_course') }}" method="post">
+          <input name="subject" placeholder="과목명" required>
+          <input name="prof" placeholder="교수명">
+          <input name="room" placeholder="강의실">
+          <select name="day">{% for d in days %}<option value="{{ d }}">{{ d }}</option>{% endfor %}</select>
+          <input name="start" placeholder="09:00" required>
+          <input name="end" placeholder="10:30" required>
+          <button class="add-btn" type="submit"><i data-feather="plus-circle"></i> 추가</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="timetable-grid">
+        <div class="cell day-header">시간</div>
+        {% for d in days %}
+        <div class="cell day-header">{{ d }}</div>
+        {% endfor %}
+        {% for h in hours %}
+        <div class="cell time-cell">{{ '%02d:00'|format(h) }}</div>
+        {% for d in days %}
+        <div class="cell"></div>
+        {% endfor %}
+        {% endfor %}
+      </div>
+      <div style="position: relative;">
         {% for b in blocks %}
-        <div class="block" data-id="{{ b.id }}" data-start="{{ b.start }}" data-end="{{ b.end }}" data-memo="{{ b.memo }}"
-          onclick="openEdit(this)"
-          style="left:{{ b.left }}%; top:{{ b.top }}%; width:{{ b.width }}%; height:{{ b.height }}%; background:{{ b.color }}; color:#2E2E2E;">
-          <div><strong>{{ b.subject }}</strong></div>
-          {% if b.prof %}<div>{{ b.prof }}</div>{% endif %}
+        <div class="block"
+             style="left:{{ b.left }}%; top:{{ b.top }}%; width:{{ b.width }}%; height:{{ b.height }}%"
+             onclick="openEdit(this)"
+             data-id="{{ b.id }}" data-start="{{ b.start }}" data-end="{{ b.end }}" data-memo="{{ b.memo }}">
+          <strong>{{ b.subject }}</strong><br>
+          {% if b.prof %}<small>{{ b.prof }}</small>{% endif %}
           {% if b.room %}<div>({{ b.room }})</div>{% endif %}
         </div>
         {% endfor %}
       </div>
     </div>
 
-    
-
-    <section class="planner-card">
-      <h2>주간 학습 플래너</h2>
-      <form class="plan-input" action="{{ url_for('add_plan') }}" method="post">
-        <input name="plan" placeholder="할 일을 입력하세요" required>
+    <div class="box">
+      <h2><i data-feather="edit-2"></i> 주간 학습 플래너</h2>
+      <form class="flex" action="{{ url_for('timetable.add_plan') }}" method="post">
+        <input name="plan" placeholder="할 일 입력" required>
         <input type="date" name="due">
-        <button type="submit" class="primary">추가</button>
-        <button type="button" id="gpt-btn" class="sub">GPT 추천받기</button>
+        <button class="add-btn" type="submit"><i data-feather="plus-circle"></i> 추가</button>
+        <button type="button" class="gpt-btn" id="gpt-btn"><i data-feather="zap"></i> GPT 추천</button>
       </form>
-      <ul class="plan-list">
+      <ul style="list-style:none; padding:0; margin-top:16px;">
         {% for p in plans %}
-        <li data-id="{{ p.id }}" class="{% if p.done %}done{% endif %}">
-          <label>
+        <li data-id="{{ p.id }}"
+            style="background: #ffffff; padding: 12px 16px; border-radius: 12px; margin-bottom: 10px;
+                   display: flex; align-items: center; gap: 10px; font-size: 14px;
+                   box-shadow: 0 2px 8px rgba(0,0,0,0.04);"
+            class="{% if p.done %}task-done{% endif %}">
+          <label style="flex-grow: 1;">
             <input type="checkbox" {% if p.done %}checked{% endif %} onclick="togglePlan(event,this)">
-            <span>{{ p.text }}</span>
+            <span style="{% if p.done %}text-decoration: line-through; color: var(--txt-sub);{% endif %}">
+              {{ p.text }}
+            </span>
+            {% if p.due %}
+              <div class="d-day">({{ p.due }})</div>
+            {% endif %}
           </label>
-          {% if p.due %}<span class="due"> ({{ p.due }})</span>{% endif %}
         </li>
         {% endfor %}
       </ul>
-    </section>
-
-    <div class="goto-todo">
-      <a href="{{ url_for('todolist.index') }}">📋 Todo List 보러가기</a>
     </div>
 
-    <!-- ✨ 모달 팝업 (꼭 body 안 맨 아래에 있어야 함) -->
-    <div id="edit-modal"
-      style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:1000;">
-      <div class="modal-content"
-        style="background:white; padding:20px; width:90%; max-width:400px; margin:100px auto; border-radius:12px;">
-        <h2>강의 수정</h2>
-        <form method="POST" id="edit-course-form">
-          <input type="hidden" name="id" id="edit-id">
-          <input name="subject" id="edit-subject" placeholder="과목명" required>
-          <input name="prof" id="edit-prof" placeholder="교수명">
-          <input name="room" id="edit-room" placeholder="강의실">
-          <select name="day" id="edit-day">{% for d in days %}<option value="{{ d }}">{{ d }}</option>{% endfor
-            %}</select>
-          <input name="start" id="edit-start" placeholder="시작 (09:30)" required>
-          <input name="end" id="edit-end" placeholder="종료 (11:00)" required>
-          <input name="memo" id="edit-memo" placeholder="메모 (선택)">
-          <button class="primary" type="submit">저장</button>
-          <button class="sub" type="button" onclick="closeEdit()">취소</button>
-          <button class="sub" type="button" onclick="deleteCourse()">삭제</button>
-        </form>
-      </div>
+    <div class="calendar-link">
+      <a href="{{ url_for('todolist.index') }}">
+        <i data-feather="list"></i> To Do List 보기
+      </a>
     </div>
-
-
   </div>
 
   <script>
+    feather.replace();
+
     function toggleSemesterTools() {
       const box = document.getElementById("semester-tools");
-      const isVisible = box.style.display === "block";
-      box.style.display = isVisible ? "none" : "block";
+      box.style.display = box.style.display === "block" ? "none" : "block";
     }
 
     function toggleCourseForm() {
       const box = document.getElementById("course-form-box");
-      box.style.display = (box.style.display === "none") ? "block" : "none";
+      box.style.display = box.style.display === "none" ? "block" : "none";
     }
 
     function togglePlan(ev, cb) {
       ev.stopPropagation();
       const id = cb.closest('li').dataset.id;
-      fetch(`/plan/${id}/toggle`, { method: 'POST' })
+      fetch(`/timetable/plan/${id}/toggle`, { method: 'POST' })
         .then(() => location.reload());
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      document.getElementById('gpt-btn').onclick = async (event) => {
-        const b = event.target;
-        b.disabled = true;
-        b.textContent = '불러오는 중…';
-        try {
-          const r = await fetch("{{ url_for('gpt') }}", { method: 'POST' });
-          if (r.ok) location.reload();
-          else alert('GPT 오류');
-        } finally {
-          b.disabled = false;
-          b.textContent = 'GPT 추천받기';
-        }
-      };
-    });
+    document.getElementById('gpt-btn').onclick = async (event) => {
+      const b = event.target;
+      b.disabled = true;
+      b.textContent = 'GPT 불러오는 중...';
+      try {
+        const r = await fetch("{{ url_for('timetable.gpt') }}", { method: 'POST' });
+        if (r.ok) location.reload();
+        else alert('GPT 오류 발생');
+      } finally {
+        b.disabled = false;
+        b.textContent = 'GPT 추천';
+      }
+    };
 
     function openEdit(el) {
-      const id = el.dataset.id;
-      const lines = Array.from(el.querySelectorAll('div')).map(e => e.innerText);
-      document.getElementById("edit-id").value = id;
-      document.getElementById("edit-subject").value = lines[0] || "";
-      document.getElementById("edit-prof").value = lines[1] || "";
-      document.getElementById("edit-room").value = lines[2]?.replace(/[()]/g, '') || "";
-      document.getElementById("edit-memo").value = el.dataset.memo || "";
-      document.getElementById("edit-start").value = el.dataset.start || "";
-      document.getElementById("edit-end").value = el.dataset.end || "";
-      document.getElementById("edit-course-form").action = `/edit_course/${id}`;
-      document.getElementById("edit-modal").style.display = "block";
+      alert("✏️ 시간표 수정 모달은 추후 구현 예정입니다!");
     }
-
-    function closeEdit() {
-      document.getElementById("edit-modal").style.display = "none";
-    }
-
-    function deleteCourse() {
-      const id = document.getElementById("edit-id").value;
-      if (confirm("정말 삭제할까요?")) {
-        fetch(`/delete_course/${id}`, { method: 'POST' })
-          .then(() => location.reload());
-      }
-    }
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeEdit();
-    });
   </script>
-  
-</body>
 
+</body>
 </html>

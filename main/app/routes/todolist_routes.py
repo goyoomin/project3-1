@@ -3,8 +3,10 @@ import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from datetime import datetime, timedelta
 
+# 🔹 Blueprint 선언
 todolist_bp = Blueprint('todolist', __name__, url_prefix='/todolist')
 
+# 🔹 파일 경로
 TASKS_FILE = "tasks.json"
 
 # 🔹 JSON에서 로드
@@ -85,7 +87,6 @@ def index():
         flash("추가 완료!")
         return redirect(url_for('todolist.index'))
 
-    # 필터 및 정렬
     filtered = [
         t for t in tasks
         if keyword.lower() in t["title"].lower() and (not hide_done or not t["done"])
@@ -191,3 +192,6 @@ def update_date(task_id):
         save_tasks(tasks)
         return jsonify({"status": "success"}), 200
     return jsonify({"status": "fail"}), 400
+
+# 🔹 외부에서 사용하도록 export
+tasks = load_tasks()
