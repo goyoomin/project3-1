@@ -1,21 +1,116 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>학식 및 기식 메뉴</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>학식/기식 앱</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/food_style.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
-    <table>
-        <tbody>
-            {% for time, foods in menu.items() %}
-            <tr>
-                <td>{{ time }}</td>
-                <td>{{ ', '.join(foods) }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<nav>
+  <div class="nav-center">
+    <button onclick="showSection('hak')">학식</button>
+    <button onclick="showSection('gi')">기식</button>
+    <button onclick="window.location.href='/food/local'">주변맛집</button>
+  </div>
+</nav>
+
+<div class="date-nav">
+  <button class="nav-arrow left-arrow">◀</button>
+  <div id="date-display"></div>
+  <button class="nav-arrow right-arrow">▶</button>
+</div>
+<div id="date-display" style="text-align:center; margin:10px 0; font-weight:bold;"></div>
+
+<div id="hak" class="content">
+  <div class="menu-section">
+    <div class="menu-title">🍱 맛난한끼</div>
+    <p id="matnanhan-ggi">{{ food_menus["맛난한끼"]|safe }}</p>
+  </div>
+  <div class="menu-section">
+    <div class="menu-title">🥗 건강한끼</div>
+    <p id="geonganghan-ggi">{{ food_menus["건강한끼"]|safe }}</p>
+  </div>
+</div>
+
+<div id="gi" class="content" style="display:none;">
+  <div class="menu-section">
+    <div class="menu-title">🌅 아침</div>
+    <p id="morning">{{ recommended_foods["아침"]|safe }}</p>
+  </div>
+  <div class="menu-section">
+    <div class="menu-title">🌞 점심</div>
+    <p id="lunch">{{ recommended_foods["점심"]|safe }}</p>
+  </div>
+  <div class="menu-section">
+    <div class="menu-title">🌙 저녁</div>
+    <p id="dinner">{{ recommended_foods["저녁"]|safe }}</p>
+  </div>
+</div>
+
+<div id="local" class="content" style="display:none;">
+  <div class="menu-section">
+    <div class="menu-title">주변맛집</div>
+    <p>준비 중입니다...</p>
+  </div>
+</div>
+
+<script>
+  // 섹션 전환
+  function showSection(id) {
+    ['hak','gi','local'].forEach(section => {
+      document.getElementById(section).style.display = (section === id) ? 'block' : 'none';
+    });
+  }
+
+  showSection('hak'); // 기본 표시 학식
+
+  // 날짜 표시
+  let currentDate = new Date();
+  const dateDisplay = document.getElementById('date-display');
+
+  function formatDate(date) {
+    return date.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+  }
+
+  function updateDateDisplay() {
+    dateDisplay.textContent = `${formatDate(currentDate)}`;
+  }
+
+  // 데이터 불러오기
+  function loadFoods(dateStr) {
+    fetch(`/food/api/foods?date=${dateStr}`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('matnanhan-ggi').innerHTML = data.food_menus["맛난한끼"] || '정보 없음';
+        document.getElementById('geonganghan-ggi').innerHTML = data.food_menus["건강한끼"] || '정보 없음';
+        document.getElementById('morning').innerHTML = data.recommended_foods["아침"] || '정보 없음';
+        document.getElementById('lunch').innerHTML = data.recommended_foods["점심"] || '정보 없음';
+        document.getElementById('dinner').innerHTML = data.recommended_foods["저녁"] || '정보 없음';
+      })
+      .catch(() => {
+        alert('데이터를 불러오는데 실패했습니다.');
+      });
+  }
+
+  // 화살표 클릭시 날짜 변경
+  document.querySelector('.left-arrow').addEventListener('click', () => {
+    currentDate.setDate(currentDate.getDate() - 1);
+    updateDateDisplay();
+    loadFoods(formatDate(currentDate));
+  });
+
+  document.querySelector('.right-arrow').addEventListener('click', () => {
+    currentDate.setDate(currentDate.getDate() + 1);
+    updateDateDisplay();
+    loadFoods(formatDate(currentDate));
+  });
+
+  // 초기 세팅
+  updateDateDisplay();
+</script>
+
 </body>
 </html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>할 일 수정</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #eaf3ff, #f8faff);
+      font-family: 'Pretendard', sans-serif;
+      color: #2E2E2E;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 60px auto;
+      padding: 32px 24px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    input[type="text"], select {
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #d8dee9;
+      background-color: #F8FAFC;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 12px;
+      border: 1px solid #AFCBFF;
+      background: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 10px;
+      color: #2E2E2E;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    button:hover {
+      background: #F0F7FF;
+      border-color: #94bfff;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 24px;
+    }
+
+    .back-link a {
+      font-size: 13px;
+      color: #9AA5B1;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .back-link a:hover {
+      color: #5f6d78;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        margin: 24px 16px;
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>✏️ 할 일 수정</h1>
+
+    <form method="POST">
+      <input type="text" name="title" value="{{ task.title }}" required>
+
+      <input type="text" id="due" name="due" value="{{ task.due }}" required>
+
+      <select name="priority">
+        <option value="긴급" {% if task.priority == "긴급" %}selected{% endif %}>🔴 긴급</option>
+        <option value="보통" {% if task.priority == "보통" %}selected{% endif %}>🟡 보통</option>
+        <option value="여유" {% if task.priority == "여유" %}selected{% endif %}>🟢 여유</option>
+      </select>
+
+      <input type="text" name="memo" value="{{ task.memo }}">
+
+      <button type="submit"><i data-feather="check-circle"></i> 수정 완료</button>
+    </form>
+
+    <div class="back-link">
+      <a href="{{ url_for('todolist.index') }}">← 목록으로 돌아가기</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script>
+    flatpickr("#due", {
+      mode: "range",
+      dateFormat: "Y-m-d"
+    });
+    feather.replace();
+  </script>
+</body>
+</html>

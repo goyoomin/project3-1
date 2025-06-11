@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>캠픽 회원가입</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --main-color: #AFCBFF;
+      --hover-color: #94bfff;
+      --text-main: #2E2E2E;
+      --text-sub: #9AA5B1;
+      --bg-color: #F8FAFC;
+      --input-bg: #f0f4f8;
+      --input-border: #ccc;
+      --success: #28a745;
+      --error: #d9534f;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      background-color: var(--bg-color);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px 16px;
+      color: var(--text-main);
+    }
+
+    .form-wrap {
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+    }
+
+    .logo {
+      width: 100px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .sub {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin-bottom: 30px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    input {
+      height: 48px;
+      padding: 0 14px;
+      font-size: 15px;
+      border-radius: 12px;
+      border: 1px solid var(--input-border);
+      background-color: var(--input-bg);
+      transition: border 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--main-color);
+      box-shadow: 0 0 0 3px rgba(175, 203, 255, 0.3);
+    }
+
+    input.valid {
+      border-color: var(--success);
+    }
+
+    input.invalid {
+      border-color: var(--error);
+    }
+
+    .pw-check-msg {
+      font-size: 13px;
+      margin-top: -6px;
+      margin-bottom: 6px;
+      padding-left: 4px;
+      min-height: 18px;
+      display: none;
+      text-align: left;
+    }
+
+    .pw-check-msg.valid {
+      color: var(--success);
+      display: block;
+    }
+
+    .pw-check-msg.invalid {
+      color: var(--error);
+      display: block;
+    }
+
+    label.checkbox {
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      text-align: left;
+      color: #555;
+    }
+
+    label.checkbox input {
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      accent-color: var(--main-color);
+    }
+
+    button {
+      height: 48px;
+      border-radius: 12px;
+      background-color: var(--main-color);
+      border: none;
+      font-weight: bold;
+      font-size: 15px;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--hover-color);
+    }
+
+    .login-link {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .login-link a {
+      color: var(--text-main);
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-wrap">
+    <!-- ✅ 로고 추가 -->
+    <img src="{{ url_for('static', filename='img/campick-logo.png') }}" alt="Campick 로고" class="logo">
+
+    <h1>캠픽 회원가입</h1>
+    <div class="sub">캠퍼스 생활을 더 편리하게 만들어드릴게요</div>
+
+    <form method="POST" onsubmit="return checkPasswords()">
+      <input type="text" name="name" placeholder="이름 또는 닉네임" required>
+      <input type="text" name="username" placeholder="아이디 입력" required>
+      <input type="email" name="email" placeholder="이메일 주소 입력" required>
+      <input type="password" id="password" name="password" placeholder="비밀번호 입력" required>
+      <input type="password" id="confirm_password" name="confirm_password" placeholder="비밀번호 확인" required>
+      <div id="pw-check-msg" class="pw-check-msg"></div>
+      <input type="text" name="student_id" placeholder="학번 (선택)">
+      <input type="text" name="department" placeholder="학과 (선택)">
+      <label class="checkbox">
+        <input type="checkbox" required>
+        캠픽 이용약관 및 개인정보 처리방침에 동의합니다.
+      </label>
+      <button type="submit">가입하기</button>
+    </form>
+
+    <div class="login-link">
+      가입하셨나요? <a href="{{ url_for('login.login') }}">로그인 창으로 이동하기</a>
+    </div>
+  </div>
+
+  <script>
+    const password = document.getElementById('password');
+    const confirm = document.getElementById('confirm_password');
+    const msg = document.getElementById('pw-check-msg');
+
+    function validatePasswords() {
+      if (confirm.value === '') {
+        msg.style.display = 'none';
+        confirm.classList.remove('valid', 'invalid');
+        return;
+      }
+
+      if (password.value === confirm.value) {
+        msg.textContent = "✅ 비밀번호가 일치합니다.";
+        msg.classList.remove('invalid');
+        msg.classList.add('valid');
+        msg.style.display = 'block';
+        confirm.classList.remove('invalid');
+        confirm.classList.add('valid');
+      } else {
+        msg.textContent = "❗ 비밀번호가 일치하지 않습니다.";
+        msg.classList.remove('valid');
+        msg.classList.add('invalid');
+        msg.style.display = 'block';
+        confirm.classList.remove('valid');
+        confirm.classList.add('invalid');
+      }
+    }
+
+    password.addEventListener('input', validatePasswords);
+    confirm.addEventListener('input', validatePasswords);
+
+    function checkPasswords() {
+      if (password.value !== confirm.value) {
+        msg.textContent = "❗ 비밀번호가 일치하지 않습니다.";
+        msg.classList.remove('valid');
+        msg.classList.add('invalid');
+        msg.style.display = 'block';
+        confirm.classList.remove('valid');
+        confirm.classList.add('invalid');
+        return false;
+      }
+      return true;
+    }
+  </script>
+</body>
+</html>
