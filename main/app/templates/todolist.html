@@ -275,12 +275,15 @@
               {{ task.title }}
               {% if task.memo %}<div class="memo">{{ task.memo }}</div>{% endif %}
               <div class="d-day">
+                {% if task.dday is number %}
                 {% if task.dday >= 0 %}
-                  D-{{ task.dday }}
+                D-{{ task.dday }}
                 {% else %}
-                  D+{{ -task.dday }}
+                D+{{ task.dday | abs }}
                 {% endif %}
-              </div>
+                {% else %}
+                D&nbsp;?
+                {% endif %}        </div>
             </div>
           </div>
           <div class="actions">
