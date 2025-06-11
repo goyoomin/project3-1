@@ -11,16 +11,17 @@
       background: linear-gradient(135deg, #eaf3ff, #f8faff);
       font-family: 'Pretendard', sans-serif;
       color: #2E2E2E;
+      line-height: 1.6;
     }
 
     .app-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 24px;
+      padding: 12px 20px;
       background: #ffffffcc;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -29,77 +30,103 @@
     .app-logo {
       display: flex;
       align-items: center;
-      font-weight: bold;
-      font-size: 20px;
-      gap: 8px;
+      font-weight: 700;
+      font-size: 18px;
+      gap: 6px;
     }
 
     .app-logo img {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
     }
 
     .profile-section {
       display: flex;
-      gap: 12px;
       align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #2E2E2E;
     }
 
     .main {
-      max-width: 480px;
+      max-width: 520px;
       margin: 0 auto;
       padding: 24px 20px 100px;
-    }
-
-    .date-widget {
-      background: white;
-      border-radius: 16px;
-      padding: 18px 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      margin-bottom: 24px;
-      text-align: center;
-    }
-
-    .date-widget h2 {
-      font-size: 18px;
-      margin-bottom: 6px;
-    }
-
-    .date-widget p {
-      font-size: 14px;
-      color: #6b7280;
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
+      gap: 16px;
+      margin-bottom: 36px;
     }
 
     .tile {
       background: white;
       border-radius: 16px;
-      padding: 28px 12px;
+      padding: 24px 14px;
       text-align: center;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-      transition: transform 0.2s ease;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
       text-decoration: none;
       color: inherit;
     }
 
     .tile:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 14px rgba(0,0,0,0.08);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
     }
 
     .tile i {
-      font-size: 24px;
-      margin-bottom: 8px;
+      width: 30px;
+      height: 30px;
+      margin-bottom: 12px;
+      color: #6097ff;
     }
 
     .tile-label {
       font-size: 15px;
       font-weight: 600;
+    }
+
+    h2.section-title {
+      margin-bottom: 12px;
+      font-size: 17px;
+      color: #1e293b;
+    }
+
+    .timetable-wrapper {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+      overflow-x: auto;
+      padding: 24px;
+    }
+
+    table.timetable {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    table.timetable th,
+    table.timetable td {
+      border: 1px solid #e2e8f0;
+      padding: 8px;
+      text-align: center;
+    }
+
+    table.timetable th {
+      background: #eef3fb;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    table.timetable td.time {
+      background: #f1f5f9;
+      font-weight: 600;
+      color: #64748b;
     }
 
     .tab-bar {
@@ -122,6 +149,7 @@
       font-size: 13px;
       color: #9AA5B1;
       text-decoration: none;
+      transition: color 0.2s ease;
     }
 
     .tab-item.active {
@@ -134,10 +162,19 @@
     }
 
     button.logout-btn {
-      background: none;
-      border: none;
-      font-size: 16px;
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 13px;
+      color: #374151;
       cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button.logout-btn:hover {
+      background: #e5e7eb;
+      color: #111827;
     }
   </style>
 </head>
@@ -149,7 +186,8 @@
     </div>
     <div class="profile-section">
       {% if session['name'] %}
-        <span style="font-size: 14px; font-weight: 500;">👤 {{ session['name'] }}</span>
+        <i data-feather="user" style="width: 16px; height: 16px;"></i>
+        <span>{{ session['name'] }}</span>
       {% endif %}
       <form action="{{ url_for('login.logout') }}" method="post">
         <button class="logout-btn" title="로그아웃">로그아웃</button>
@@ -158,13 +196,7 @@
   </div>
 
   <div class="main">
-    <div class="date-widget">
-      <h2>{{ current_date or "2025년 5월 29일" }}</h2>
-      <p>오늘도 멋진 하루 보내세요 ☀️</p>
-    </div>
-
     <div class="grid">
-      <!-- 여기 수정됨 -->
       <a href="{{ url_for('map.show_map') }}" class="tile">
         <i data-feather="map-pin"></i>
         <div class="tile-label">지도</div>
@@ -181,6 +213,32 @@
         <i data-feather="check-square"></i>
         <div class="tile-label">할일</div>
       </a>
+    </div>
+
+    <h2 class="section-title">내 시간표</h2>
+    <div class="timetable-wrapper">
+      <table class="timetable">
+        <thead>
+          <tr>
+            <th>시간</th>
+            <th>Mon</th>
+            <th>Tue</th>
+            <th>Wed</th>
+            <th>Thu</th>
+            <th>Fri</th>
+            <th>Sat</th>
+            <th>Sun</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for hour in range(9, 18) %}
+          <tr>
+            <td class="time">{{ "%02d:00" % hour }}</td>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
 

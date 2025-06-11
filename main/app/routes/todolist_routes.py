@@ -26,7 +26,8 @@ def calculate_dday(due_date):
     try:
         today = datetime.today().date()
         due = datetime.strptime(due_date, '%Y-%m-%d').date()
-        return (due - today).days
+        delta = (due - today).days
+        return f"D-{delta}" if delta >= 0 else f"D+{abs(delta)}"
     except:
         return "?"
 
@@ -54,7 +55,7 @@ def calculate_stats(tasks):
 
     return progress, added, completed
 
-# 🔸 메인 ToDo 페이지
+# 🔺 메인 ToDo 페이지
 @todolist_bp.route("/", methods=["GET", "POST"])
 def index():
     tasks = load_tasks()
@@ -91,37 +92,39 @@ def index():
         t for t in tasks
         if keyword.lower() in t["title"].lower() and (not hide_done or not t["done"])
     ]
-    sorted_tasks = sorted(filtered, key=lambda t: t["dday"] if isinstance(t["dday"], int) else 9999)
+    sorted_tasks = sorted(filtered, key=lambda t: int(t["dday"][2:]) if isinstance(t["dday"], str) and t["dday"].startswith("D") else 9999)
 
     progress, added_week, done_week = calculate_stats(tasks)
 
     return render_template("todolist.html",
-                           tasks=sorted_tasks,
-                           keyword=keyword,
-                           hide_done=hide_done,
-                           progress=progress,
-                           added_this_week=added_week,
-                           done_this_week=done_week)
+                       tasks=sorted_tasks,
+                       keyword=keyword,
+                       hide_done=hide_done,
+                       progress=progress,
+                       added_this_week=added_week,
+                       done_this_week=done_week)
 
-# 🔸 완료 상태 토글
+# 🔺 완료 상태 토글 (AJAX 대응)
 @todolist_bp.route("/toggle/<int:task_id>", methods=["POST"])
 def toggle_done(task_id):
     tasks = load_tasks()
     if 0 <= task_id < len(tasks):
         tasks[task_id]["done"] = not tasks[task_id]["done"]
         save_tasks(tasks)
-    return redirect(url_for('todolist.index'))
+        return jsonify({"success": True, "done": tasks[task_id]["done"]})
+    return jsonify({"success": False}), 400
 
-# 🔸 삭제
-@todolist_bp.route("/delete/<int:task_id>", methods=["POST"])
+# 🔺 삭제 (AJAX 대응)
+@todolist_bp.route("/delete/<int:task_id>", methods=["DELETE"])
 def delete_task(task_id):
     tasks = load_tasks()
     if 0 <= task_id < len(tasks):
         tasks.pop(task_id)
         save_tasks(tasks)
-    return redirect(url_for('todolist.index'))
+        return jsonify({"success": True})
+    return jsonify({"success": False}), 400
 
-# 🔸 수정
+# 🔺 수정
 @todolist_bp.route("/edit/<int:task_id>", methods=["GET", "POST"])
 def edit_task(task_id):
     tasks = load_tasks()
@@ -148,7 +151,7 @@ def edit_task(task_id):
 
     return redirect(url_for('todolist.index'))
 
-# 🔸 캘린더 보기
+# 🔺 컬렉더 보기
 @todolist_bp.route("/calendar")
 def calendar_view():
     tasks = load_tasks()
@@ -180,7 +183,7 @@ def calendar_view():
 
     return render_template("calendar.html", tasks=tasks_for_calendar)
 
-# 🔸 일정 드래그로 날짜 변경
+# 🔺 일정 드래그로 남은 날짜 변경
 @todolist_bp.route("/update-date/<int:task_id>", methods=["POST"])
 def update_date(task_id):
     tasks = load_tasks()
