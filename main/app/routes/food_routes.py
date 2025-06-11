@@ -1,10 +1,9 @@
 from flask import Blueprint, request, jsonify, render_template
-from app.services.food_service import get_recommended_foods, crawl_food_menu, search_restaurants_naver#, load_local_food#, search_restaurants_from_json
+from main.app.services.food_service import get_recommended_foods, crawl_food_menu, search_restaurants_naver#, load_local_food#, search_restaurants_from_json
 from datetime import datetime
 
-#from ..services.food_service import load_local_food
 
-food_bp = Blueprint('food', __name__)
+food_bp = Blueprint('food', __name__, url_prefix='/food')
 
 @food_bp.route('/')
 def index():

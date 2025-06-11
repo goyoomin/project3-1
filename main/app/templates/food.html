@@ -13,7 +13,7 @@
   <div class="nav-center">
     <button onclick="showSection('hak')">학식</button>
     <button onclick="showSection('gi')">기식</button>
-    <button onclick="window.location.href='/local'">주변맛집</button>
+    <button onclick="window.location.href='/food/local'">주변맛집</button>
   </div>
 </nav>
 
@@ -81,7 +81,7 @@
 
   // 데이터 불러오기
   function loadFoods(dateStr) {
-    fetch(`/api/foods?date=${dateStr}`)
+    fetch(`/food/api/foods?date=${dateStr}`)
       .then(response => response.json())
       .then(data => {
         document.getElementById('matnanhan-ggi').innerHTML = data.food_menus["맛난한끼"] || '정보 없음';
