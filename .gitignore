@@ -1,0 +1,35 @@
+# Python 캐시 파일
+__pycache__/
+*.pyc
+*.pyo
+
+# 가상환경/환경변수
+venv/
+.env/
+
+# 로그, 시스템 파일
+*.log
+.DS_Store
+
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# VS Code & PyCharm
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

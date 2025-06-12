@@ -1,0 +1,12 @@
+2024-11-24 23:23:44,027 - werkzeug - WARNING -  * Debugger is active!
+2024-11-24 23:23:44,035 - werkzeug - INFO -  * Debugger PIN: 790-884-623
+2024-11-24 23:24:09,394 - werkzeug - INFO -  * Detected change in 'C:\\Users\\fkdud\\Documents\\my_flask_project\\app.py', reloading
+2024-11-24 23:24:10,131 - werkzeug - WARNING -  * Debugger is active!
+2024-11-24 23:24:10,138 - werkzeug - INFO -  * Debugger PIN: 790-884-623
+2024-11-24 23:24:12,185 - werkzeug - INFO -  * Detected change in 'C:\\Users\\fkdud\\Documents\\my_flask_project\\app.py', reloading
+2024-11-24 23:24:12,873 - werkzeug - WARNING -  * Debugger is active!
+2024-11-24 23:24:12,881 - werkzeug - INFO -  * Debugger PIN: 790-884-623
+2024-11-24 23:24:20,927 - werkzeug - INFO - 127.0.0.1 - - [24/Nov/2024 23:24:20] "GET / HTTP/1.1" 200 -
+2024-11-24 23:28:29,011 - werkzeug - INFO - 127.0.0.1 - - [24/Nov/2024 23:28:29] "GET / HTTP/1.1" 200 -
+2024-11-24 23:28:29,771 - werkzeug - INFO - 127.0.0.1 - - [24/Nov/2024 23:28:29] "GET / HTTP/1.1" 200 -
+2024-11-24 23:28:42,698 - werkzeug - INFO -  * Detected change in 'C:\\Users\\fkdud\\Documents\\my_flask_project\\app.py', reloading
