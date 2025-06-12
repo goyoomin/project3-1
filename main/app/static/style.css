@@ -1,7 +1,5 @@
-/* -------------------------------------------------
-   [공통] 전체 배경, 글꼴, 기본 스타일
--------------------------------------------------- */
 body {
+<<<<<<< HEAD
   font-family: 'Segoe UI', sans-serif;
   background-color: #F8FAFC;
   margin: 0;
@@ -69,26 +67,38 @@ body {
   margin: 0;
   font-family: 'Arial', sans-serif;
   background-color: #f5f7ff;
+=======
+  font-family: 'Segoe UI', 'Arial', sans-serif;
+  background-color: #F8FAFC;
+  margin: 0;
+  padding: 0;
+  color: #2E2E2E;
+>>>>>>> map
 }
 
 #title {
   text-align: center;
-  font-size: 28px;
+  font-size: 2.2em;
   font-weight: bold;
-  padding: 15px;
+  padding: 18px 0 10px 0;
   background-color: #eef4ff;
   color: #7da3d8;
   border-bottom: 2px solid #b0c4de;
+  letter-spacing: 2px;
+  margin-bottom: 0;
 }
 
 #map-container {
-  width: 90%;
-  height: 60vh;
-  margin: 20px auto;
-  border: 4px solid #ccdff9;
-  border-radius: 12px;
+  width: 95vw;
+  max-width: 1000px;
+  height: 55vh;
+  min-height: 500px;
+  margin: 24px auto 0 auto;
+  border: 4px solid #cddff9;
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.09);
+  background: #fff;
 }
 
 #map {
@@ -97,6 +107,7 @@ body {
   height: 100%;
 }
 
+<<<<<<< HEAD
 =======
   height: 300px;
 }
@@ -368,3 +379,81 @@ input.invalid {
   display: block;
 }
 >>>>>>> feature/final-merge
+=======
+#route-info-box {
+  width: 95vw;
+  max-width: 975px;
+  margin: 18px auto 28px auto;
+  background: rgba(205, 223, 249, 0.35);
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 36px;
+  font-size: 1.13em;
+}
+
+.route-label {
+  font-weight: 600;
+  color: #4778fa;
+  margin-right: 5px;
+}
+.route-value {
+  color: #222;
+}
+
+.custom-overlay-box {
+  width: 700px !important;
+  min-width: 180px;
+  word-break: break-all !important;  /* 글자 단위 줄바꿈 */
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+  background: #fff;
+  padding: 20px 20px 15px 20px !important; /* ← 여기! (상, 우, 하, 좌) */
+
+}
+
+.overlay-title {
+  font-size: 1.07em;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+.overlay-desc {
+  color: #345;
+  margin-bottom: 10px;
+}
+.overlay-btns {
+  margin-top: 7px;
+  display: flex;
+  gap: 10px;
+}
+.button {
+  background-color: #7476f9;
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  transition: background 0.2s;
+}
+.button:hover {
+  background-color: #c967ca;
+}
+.close-btn {
+  position: absolute;
+  top: 7px;
+  right: 10px;
+  cursor: pointer;
+  color: #aaa;
+  font-size: 18px;
+}
+.close-btn:hover {
+  color: #f55555;
+}
+>>>>>>> map
