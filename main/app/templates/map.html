@@ -7,7 +7,16 @@
 </head>
 <body>
 
-  <div id="title">MAP</div>
+  <div class="app-bar">
+  <div class="app-logo">
+    <img src="{{ url_for('static', filename='img/campick-logo.png') }}" alt="로고" />
+    MAP
+  </div>
+  <a href="{{ url_for('main.index') }}" class="main-back-btn">
+    <i data-feather="arrow-left-circle"></i> 메인으로
+  </a>
+</div>
+
 
   <div id="map-container">
     <div id="map"></div>
@@ -19,7 +28,7 @@
     <button id="find-path-btn" class="button" style="margin-left:32px;">길찾기</button>
   </div>
 
-  <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a7a331e4948938c1ee40b4ca14c1be83&autoload=true"></script>
+ <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=a7a331e4948938c1ee40b4ca14c1be83&autoload=true"></script>
 
   <script type="text/javascript">
     var buildings = {{ buildings | tojson | safe }};
@@ -35,6 +44,7 @@
 
     var activeOverlay = null;
     let startPos = null;
+
     let endPos = null;
     let pathPolyline = null;
 
