@@ -13,12 +13,16 @@
     <div id="map"></div>
   </div>
 
-  <!-- Kakao 지도 API -->
+  <div id="route-info-box">
+    <div><span class="route-label">출발지:</span> <span id="start-info" class="route-value">선택 안 됨</span></div>
+    <div><span class="route-label">도착지:</span> <span id="end-info" class="route-value">선택 안 됨</span></div>
+    <button id="find-path-btn" class="button" style="margin-left:32px;">길찾기</button>
+  </div>
+
   <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a7a331e4948938c1ee40b4ca14c1be83&autoload=true"></script>
 
-  <!-- Python -> JS 데이터 변환 -->
   <script type="text/javascript">
-    window.buildings = {{ buildings | tojson | safe }};
+    var buildings = {{ buildings | tojson | safe }};
   </script>
 
   <script>
@@ -30,54 +34,57 @@
     var map = new kakao.maps.Map(mapContainer, mapOption);
 
     var activeOverlay = null;
+    let startPos = null;
+    let endPos = null;
+    let pathPolyline = null;
 
-    buildings.forEach(function(b) {
+    buildings.forEach(function(b, idx) {
       var coords = b.coords.map(function(c) {
         return new kakao.maps.LatLng(c[0], c[1]);
       });
 
       var polygon = new kakao.maps.Polygon({
         path: coords,
-        strokeWeight: 0, // 기본은 선 없음
+        strokeWeight: 0,
         strokeColor: '#004c80',
         strokeOpacity: 0,
         fillColor: '#a0c8f0',
-        fillOpacity: 0.05  // ← ★ 0이 아닌 0.05 정도로 (아주 희미하게, 이벤트 살아있음)
+        fillOpacity: 0.05
       });
 
       polygon.setMap(map);
 
-      // 마우스 오버 시 강조
       kakao.maps.event.addListener(polygon, 'mouseover', function () {
         polygon.setOptions({
           strokeWeight: 2,
           strokeOpacity: 0.8,
           fillOpacity: 0.3
         });
-        map.getContainer().style.cursor = 'pointer';
+        document.getElementById('map').style.cursor = 'pointer';  
       });
 
-      // 마우스 아웃 시 원래대로 (fillOpacity를 0이 아닌 0.05로!)
       kakao.maps.event.addListener(polygon, 'mouseout', function () {
         polygon.setOptions({
           strokeWeight: 0,
           strokeOpacity: 0,
-          fillOpacity: 0.05  // ← ★ 여기!
+          fillOpacity: 0.05
         });
-        map.getContainer().style.cursor = 'default';
+        document.getElementById('map').style.cursor = 'default';  
       });
 
-      // 클릭 시 정보창 표시
       kakao.maps.event.addListener(polygon, 'click', function(mouseEvent) {
         if (activeOverlay) {
           activeOverlay.setMap(null);
         }
 
         var content = `
-          <div style="position:relative; padding:10px; background:#fff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
-            <div style="position:absolute; top:5px; right:8px; cursor:pointer;" onclick="closeOverlay()">❌</div>
-            <div style="padding-top:10px;">
-              📍<strong>${b.name}</strong><br>${b.description}
+          <div class="custom-overlay-box">
+            <div class="close-btn" onclick="closeOverlay()">❌</div>
+            <div class="overlay-title">📍<strong>${b.name}</strong></div>
+            <div class="overlay-desc">${b.description}</div>
+            <div class="overlay-btns">
+              <button class="button" onclick="setStart(${b.coords[0][0]}, ${b.coords[0][1]}, '${b.name}', ${idx})">출발지</button>
+              <button class="button" onclick="setEnd(${b.coords[0][0]}, ${b.coords[0][1]}, '${b.name}', ${idx})">도착지</button>
             </div>
           </div>
         `;
@@ -93,14 +100,48 @@
       });
     });
 
-    // 오버레이 닫기 함수
     function closeOverlay() {
       if (activeOverlay) {
         activeOverlay.setMap(null);
         activeOverlay = null;
       }
     }
-  </script>
 
+    function setStart(lat, lng, name, id) {
+      startPos = { lat, lng, name, id };
+      document.getElementById('start-info').innerText = name;
+      closeOverlay();
+    }
+    function setEnd(lat, lng, name, id) {
+      endPos = { lat, lng, name, id };
+      document.getElementById('end-info').innerText = name;
+      closeOverlay();
+    }
+
+    document.getElementById('find-path-btn').onclick = function() {
+      if (!startPos || !endPos) {
+        alert('출발지와 도착지를 모두 선택해주세요!');
+        return;
+      }
+      if (startPos.id === endPos.id) {
+        alert('출발지와 도착지는 달라야 합니다.');
+        return;
+      }
+      fetch(`/map/path/${startPos.id}/${endPos.id}`)
+        .then(res => res.json())
+        .then(data => {
+          if (pathPolyline) pathPolyline.setMap(null);
+          const linePath = data.path.map(p => new kakao.maps.LatLng(p.lat, p.lng));
+          pathPolyline = new kakao.maps.Polyline({
+            path: linePath,
+            strokeWeight: 7,
+            strokeColor: '#4f7cff',
+            strokeOpacity: 0.85,
+            strokeStyle: 'solid',
+            map: map
+          });
+        });
+    };
+  </script>
 </body>
 </html>

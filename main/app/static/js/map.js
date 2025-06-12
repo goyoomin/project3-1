@@ -1,18 +1,3 @@
-/* index.js */
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import { NavermapsProvider } from 'react-naver-maps';
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <NavermapsProvider ncpClientId="r70grgn453">
-    <App />
-  </NavermapsProvider>
-);
-
-
-/* App.jsx */
 import React, { useState, useEffect } from 'react';
 import {
   useNavermaps,
@@ -23,18 +8,16 @@ import {
 } from 'react-naver-maps';
 
 function App() {
-  // ① 네이버맵 로딩 훅
   const { loaded, error, naver } = useNavermaps();
 
   const [buildings, setBuildings] = useState([]);
-  const [start, setStart]       = useState('');
-  const [end, setEnd]           = useState('');
-  const [steps, setSteps]       = useState([]);
+  const [start, setStart] = useState(null);
+  const [end, setEnd] = useState(null);
   const [highlight, setHighlight] = useState(null);
-  const [info, setInfo]         = useState(null);
+  const [info, setInfo] = useState(null);
   const [polyPath, setPolyPath] = useState([]);
 
-  // ② 건물 목록 불러오기
+  // 건물 목록 불러오기
   useEffect(() => {
     fetch('/map/buildings')
       .then(res => res.json())
@@ -47,58 +30,64 @@ function App() {
       });
   }, []);
 
-  // ③ 건물 선택
+  // 건물 클릭 시 InfoWindow 표시
   const handleSelect = id => {
-    fetch(`/map/select/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        const pos = { lat: data.lat, lng: data.lng };
-        setHighlight(pos);
-        setInfo({ name: data.name, description: data.description, pos });
-      });
+    const b = buildings.find(b => b.id === id);
+    if (b) {
+      const pos = { lat: b.lat, lng: b.lng };
+      setHighlight(pos);
+      setInfo({ name: b.name, description: b.description, pos });
+    }
   };
 
-  // ④ 길찾기
+  // 길찾기(직선) 버튼
   const findPath = () => {
-    if (start === end) {
-      alert('출발지와 도착지를 다르게 선택하세요');
+    if (start === null || end === null) {
+      alert('출발지와 도착지를 선택하세요!');
       return;
     }
-    fetch(`/map/path/${start}/${end}`)
-      .then(res => res.json())
-      .then(data => {
-        setSteps(data.steps);
-        const s = buildings.find(b => b.id === start);
-        const e = buildings.find(b => b.id === end);
-        setPolyPath([
-          { lat: s.lat, lng: s.lng },
-          { lat: e.lat, lng: e.lng }
-        ]);
-      });
+    if (start === end) {
+      alert('출발지와 도착지는 달라야 합니다.');
+      return;
+    }
+    const s = buildings.find(b => b.id === start);
+    const e = buildings.find(b => b.id === end);
+    if (!s || !e) {
+      alert('건물 정보를 찾을 수 없습니다.');
+      setPolyPath([]);
+      return;
+    }
+    setPolyPath([
+      { lat: s.lat, lng: s.lng },
+      { lat: e.lat, lng: e.lng }
+    ]);
   };
 
-  // ⑤ 로딩 및 에러 처리
-  if (error)   return <p>지도 로드 실패</p>;
+  if (error) return <p>지도 로드 실패</p>;
   if (!loaded) return <p>지도 로딩 중...</p>;
+
+  // 버튼 비활성화 조건
+  const canFindPath = buildings.length > 1 && start !== null && end !== null;
 
   return (
     <div>
       <h1>MAP - 한경국립대학교</h1>
+      {/* 출발지/도착지 select UI */}
       <div>
         <label>출발지: </label>
-        <select value={start} onChange={e => setStart(e.target.value)}>
+        <select value={start ?? ''} onChange={e => setStart(Number(e.target.value))}>
           {buildings.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
         </select>
 
         <label>도착지: </label>
-        <select value={end} onChange={e => setEnd(e.target.value)}>
+        <select value={end ?? ''} onChange={e => setEnd(Number(e.target.value))}>
           {buildings.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
         </select>
 
-        <button onClick={findPath}>길찾기</button>
+        <button type="button" onClick={findPath} disabled={!canFindPath}>길찾기</button>
       </div>
 
-      {/* ⑥ 지도 */}
+      {/* 지도 */}
       <div style={{ width: '100%', height: '300px' }}>
         <NaverMap
           map={naver.maps.Map}
@@ -106,6 +95,16 @@ function App() {
           defaultZoom={16}
           style={{ width: '100%', height: '100%' }}
         >
+          {/* 건물마다 마커 표시 */}
+          {buildings.map(b => (
+            <Marker
+              key={b.id}
+              position={{ lat: b.lat, lng: b.lng }}
+              onClick={() => handleSelect(b.id)}
+            />
+          ))}
+
+          {/* 건물 강조 마커 */}
           {highlight && (
             <Marker
               position={highlight}
@@ -116,14 +115,40 @@ function App() {
             />
           )}
 
+          {/* 설명창 (InfoWindow) - 출발지/도착지 버튼 */}
           {info && (
             <InfoWindow
               position={info.pos}
-              content={`<div style="padding:10px;min-width:200px;"><h4>${info.name}</h4><p>${info.description}</p></div>`}
               onCloseClick={() => setInfo(null)}
-            />
+            >
+              <div style={{ padding: 10, minWidth: 200 }}>
+                <h4>{info.name}</h4>
+                <p>{info.description}</p>
+                <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
+                  <button
+                    style={{ background: '#3d8bfd', color: 'white', border: 0, borderRadius: 4, padding: '4px 8px' }}
+                    onClick={() => {
+                      setStart(buildings.find(b => b.name === info.name)?.id);
+                      setInfo(null);
+                    }}
+                  >
+                    출발지
+                  </button>
+                  <button
+                    style={{ background: '#fa5252', color: 'white', border: 0, borderRadius: 4, padding: '4px 8px' }}
+                    onClick={() => {
+                      setEnd(buildings.find(b => b.name === info.name)?.id);
+                      setInfo(null);
+                    }}
+                  >
+                    도착지
+                  </button>
+                </div>
+              </div>
+            </InfoWindow>
           )}
 
+          {/* Polyline: 출발~도착 직선 */}
           {polyPath.length === 2 && (
             <Polyline
               path={polyPath}
@@ -135,14 +160,7 @@ function App() {
         </NaverMap>
       </div>
 
-      {/* ⑦ 단계별 안내 */}
-      <div>
-        {steps.map((step, idx) => (
-          <div key={idx}>{step.instruction} ({step.distance})</div>
-        ))}
-      </div>
-
-      {/* ⑧ 사이드바: 건물 클릭 리스트 */}
+      {/* 사이드바: 건물 목록 */}
       <div>
         {buildings.map(b => (
           <div
@@ -159,4 +177,3 @@ function App() {
 }
 
 export default App;
-
