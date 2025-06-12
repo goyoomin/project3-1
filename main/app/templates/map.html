@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MAP 페이지</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div id="title">MAP</div>
+
+  <div id="map-container">
+    <div id="map"></div>
+  </div>
+
+  <!-- Kakao 지도 API -->
+  <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a7a331e4948938c1ee40b4ca14c1be83&autoload=true"></script>
+
+  <!-- Python -> JS 데이터 변환 -->
+  <script type="text/javascript">
+    window.buildings = {{ buildings | tojson | safe }};
+  </script>
+
+  <!-- 지도 및 다각형 생성 -->
+  <script>
+    var mapContainer = document.getElementById('map');
+    var mapOption = {
+      center: new kakao.maps.LatLng(37.0127, 127.2632),
+      level: 4
+    };
+    var map = new kakao.maps.Map(mapContainer, mapOption);
+
+    var activeOverlay = null;
+
+    buildings.forEach(function(b) {
+      var coords = b.coords.map(function(c) {
+        return new kakao.maps.LatLng(c[0], c[1]);
+      });
+
+      var polygon = new kakao.maps.Polygon({
+        path: coords,
+        strokeWeight: 0, // 기본은 선 없음
+        strokeColor: '#004c80',
+        strokeOpacity: 0,
+        fillColor: '#a0c8f0',
+        fillOpacity: 0.05  // ← ★ 0이 아닌 0.05 정도로 (아주 희미하게, 이벤트 살아있음)
+      });
+
+      polygon.setMap(map);
+
+      // 마우스 오버 시 강조
+      kakao.maps.event.addListener(polygon, 'mouseover', function () {
+        polygon.setOptions({
+          strokeWeight: 2,
+          strokeOpacity: 0.8,
+          fillOpacity: 0.3
+        });
+        map.getContainer().style.cursor = 'pointer';
+      });
+
+      // 마우스 아웃 시 원래대로 (fillOpacity를 0이 아닌 0.05로!)
+      kakao.maps.event.addListener(polygon, 'mouseout', function () {
+        polygon.setOptions({
+          strokeWeight: 0,
+          strokeOpacity: 0,
+          fillOpacity: 0.05  // ← ★ 여기!
+        });
+        map.getContainer().style.cursor = 'default';
+      });
+
+      // 클릭 시 정보창 표시
+      kakao.maps.event.addListener(polygon, 'click', function(mouseEvent) {
+        if (activeOverlay) {
+          activeOverlay.setMap(null);
+        }
+
+        var content = `
+          <div style="position:relative; padding:10px; background:#fff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+            <div style="position:absolute; top:5px; right:8px; cursor:pointer;" onclick="closeOverlay()">❌</div>
+            <div style="padding-top:10px;">
+              📍<strong>${b.name}</strong><br>${b.description}
+            </div>
+          </div>
+        `;
+
+        activeOverlay = new kakao.maps.CustomOverlay({
+          content: content,
+          position: mouseEvent.latLng,
+          xAnchor: 0.5,
+          yAnchor: 1.5
+        });
+
+        activeOverlay.setMap(map);
+      });
+    });
+
+    // 오버레이 닫기 함수
+    function closeOverlay() {
+      if (activeOverlay) {
+        activeOverlay.setMap(null);
+        activeOverlay = null;
+      }
+    }
+  </script>
+
+</body>
+</html>

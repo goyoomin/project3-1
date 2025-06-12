@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>캠픽 - To Do List</title>
+  <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(120deg, #eaf3ff, #f8faff);
+      font-family: 'Pretendard', sans-serif;
+      color: #2E2E2E;
+    }
+
+    .app-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: #ffffffee;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .app-logo {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      font-size: 22px;
+      gap: 8px;
+    }
+
+    .app-logo img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .floating-home {
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 30px;
+      background-color: #ffffff;
+      border: 1px solid #d0d7de;
+      text-decoration: none;
+      color: #2E2E2E;
+      backdrop-filter: blur(6px);
+      transition: background 0.3s ease;
+    }
+
+    .floating-home:hover {
+      background-color: #F0F7FF;
+    }
+
+    .main {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 30px 20px 100px;
+    }
+
+    .stats-box {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 20px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .progress-bar {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(to right, #AFCBFF, #94bfff);
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    input, select {
+      padding: 14px;
+      border: 1px solid #d8dee9;
+      border-radius: 12px;
+      background: #ffffff;
+      font-size: 14px;
+      transition: box-shadow 0.2s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px #AFCBFF55;
+    }
+
+    button {
+      padding: 14px;
+      background: #AFCBFF;
+      font-weight: 600;
+      font-size: 14px;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #94bfff;
+    }
+
+    .calendar-link {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+
+    .calendar-link a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: #ffffff;
+      border: 1.5px solid #AFCBFF;
+      border-radius: 30px;
+      font-weight: 500;
+      font-size: 14px;
+      text-decoration: none;
+      color: #2E2E2E;
+    }
+
+    .calendar-link a:hover {
+      background: #F0F7FF;
+    }
+
+    .task-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s;
+    }
+
+    .task-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .task-done {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    .priority-긴급 { border-left: 5px solid #FFA69E; }
+    .priority-보통 { border-left: 5px solid #FFF3B0; }
+    .priority-여유 { border-left: 5px solid #C7F9CC; }
+
+    .task-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .memo {
+      font-size: 12px;
+      color: #9AA5B1;
+      margin-top: 4px;
+    }
+
+    .d-day {
+      font-size: 12px;
+      color: #FFA69E;
+      margin-top: 4px;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: row;
+      gap: 4px;
+    }
+
+    .actions button {
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-bar">
+    <div class="app-logo">
+      <img src="{{ url_for('static', filename='img/campick-logo.png') }}" alt="캠픽 로고" />
+      To Do List
+    </div>
+    <a href="{{ url_for('main.index') }}" class="floating-home">⌂ 메인</a>
+  </div>
+
+  <div class="main">
+    <div class="stats-box">
+      <div class="stat-item"><span>완료율</span><span>{{ progress }}%</span></div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: {{ progress }}%;"></div>
+      </div>
+      <div class="stat-item"><span>이번 주 등록</span><span>{{ added_this_week }}건</span></div>
+      <div class="stat-item"><span>이번 주 완료</span><span>{{ done_this_week }}건</span></div>
+    </div>
+
+    <div class="calendar-link">
+      <a href="{{ url_for('todolist.calendar_view') }}">
+        <i data-feather="calendar"></i> 캘린더 보기
+      </a>
+    </div>
+
+    <h1><i data-feather="check-square"></i> 오늘의 할 일</h1>
+    <form method="POST">
+      <input type="text" name="title" placeholder="할 일 제목" required />
+      <input type="text" name="due" id="due" placeholder="날짜 선택" required />
+      <select name="priority">
+        <option value="긴급">🔴 긴급</option>
+        <option value="보통" selected>🟡 보통</option>
+        <option value="여유">🟢 여유</option>
+      </select>
+      <input type="text" name="memo" placeholder="메모 (선택)" />
+      <button type="submit"><i data-feather="plus-circle"></i> 추가</button>
+    </form>
+
+    <div id="task-list">
+      {% for task in tasks %}
+        <div class="task-card priority-{{ task.priority }} {% if task.done %}task-done{% endif %}">
+          <div class="task-left">
+            <form method="POST" action="{{ url_for('todolist.toggle_done', task_id=loop.index0) }}">
+              <input type="checkbox" name="done" onchange="this.form.submit()" {% if task.done %}checked{% endif %}>
+            </form>
+            <div class="task-info" title="{{ task.memo }}">
+              {{ task.title }}
+              {% if task.memo %}<div class="memo">{{ task.memo }}</div>{% endif %}
+              <div class="d-day">
+                {% if task.dday is number %}
+                {% if task.dday >= 0 %}
+                D-{{ task.dday }}
+                {% else %}
+                D+{{ task.dday | abs }}
+                {% endif %}
+                {% else %}
+                D&nbsp;?
+                {% endif %}        </div>
+            </div>
+          </div>
+          <div class="actions">
+            <form method="GET" action="{{ url_for('todolist.edit_task', task_id=loop.index0) }}">
+              <button title="수정"><i data-feather="edit"></i></button>
+            </form>
+            <form method="POST" action="{{ url_for('todolist.delete_task', task_id=loop.index0) }}">
+              <button title="삭제"><i data-feather="trash-2"></i></button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script>
+    flatpickr("#due", {
+      mode: "range",
+      dateFormat: "Y-m-d",
+      locale: "ko"
+    });
+
+    feather.replace();
+
+    new Sortable(document.getElementById('task-list'), {
+      animation: 150
+    });
+  </script>
+</body>
+</html>
