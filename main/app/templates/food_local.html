@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>주변 맛집 검색</title>
+  <style>
+    :root {
+      --main-color: #AFCBFF;
+      --point-color: #FFA69E;
+      --sub-color: #D6D6F5;
+      --bg-color: #F8FAFC;
+      --text-main: #2E2E2E;
+      --text-sub: #9AA5B1;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Pretendard', sans-serif, Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-main);
+      padding: 20px;
+    }
+
+    header {
+      background: white;
+      padding: 16px 24px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin-bottom: 20px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    select {
+      border: 1px solid var(--sub-color);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 14px;
+      background: var(--bg-color);
+      color: var(--text-main);
+      width: 120px; /* 드롭다운 길이 조절 */
+    }
+
+    input[type="text"] {
+      border: 1px solid var(--sub-color);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 14px;
+      background: var(--bg-color);
+      color: var(--text-main);
+      flex-grow: 1; /* 입력창은 가변적으로 넓게 */
+      min-width: 160px;
+    }
+
+    button {
+      background: var(--point-color);
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    #results {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card strong {
+      font-size: 18px;
+      color: var(--main-color);
+      margin-bottom: 8px;
+    }
+
+    .no-result {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 16px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 12px;
+      }
+      #results {
+        grid-template-columns: 1fr;
+      }
+      .filters {
+        flex-direction: column;
+        gap: 8px;
+      }
+      select, input[type="text"], button {
+        width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="filters">
+      <select id="foodType">
+        <option value="식당">전체</option>
+        <option value="한식">한식</option>
+        <option value="중식">중식</option>
+        <option value="양식">양식</option>
+        <option value="일식">일식</option>
+      </select>
+
+      <input type="text" id="customQuery" placeholder="직접 입력" />
+
+      <button onclick="search()">검색</button>
+    </div>
+  </header>
+
+  <main id="results"></main>
+
+  <script>
+    async function search() {
+      const selectValue = document.getElementById('foodType').value;
+      const customInput = document.getElementById('customQuery').value.trim();
+
+      // 쿼리 결정 (직접 입력이 우선, 없으면 select 값, select가 '식당'이면 빈 문자열)
+      let query = '';
+      if (customInput) {
+        query = customInput;
+      } else if (selectValue !== '식당') {
+        query = selectValue;
+      }
+
+      // API 호출 URL
+      const url = `/food/api/local?query=${encodeURIComponent(query)}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        displayResults(data.results);
+      } catch (error) {
+        console.error('검색 실패:', error);
+        document.getElementById('results').innerHTML = '검색 중 오류가 발생했습니다.';
+      }
+    }
+
+    function displayResults(list) {
+      const container = document.getElementById('results');
+      container.innerHTML = '';
+
+      if (!list || list.length === 0) {
+        container.innerHTML = '<div class="no-result">😥 조건에 맞는 맛집이 없습니다.</div>';
+        return;
+      }
+
+      list.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'card';
+
+        div.innerHTML = `<strong>${item.title}</strong><br>
+                         주소: ${item.address || '정보 없음'}<br>
+                         전화: ${item.phone || '정보 없음'}`;
+
+        container.appendChild(div);
+      });
+    }
+
+    window.onload = () => {
+      search();
+    };
+  </script>
+</body>
+</html>

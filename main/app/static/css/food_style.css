@@ -1,0 +1,105 @@
+:root {
+  --main-color: #AFCBFF;
+  --point-color: #FFA69E;
+  --sub-color: #D6D6F5;
+  --bg-color: #F8FAFC;
+  --text-main: #2E2E2E;
+  --text-sub: #9AA5B1;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  background-color: var(--main-color);
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-bottom: 3px solid var(--sub-color);
+}
+
+nav button {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  font-size: 1.2rem;
+  font-weight: bold; /* 글자를 더 두껍게 */
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  transition: background-color 0.3s;
+}
+
+nav button:hover {
+  background-color: var(--point-color);
+  color: white;
+}
+
+.content {
+  display: none;
+  padding: 2rem 1rem;
+  max-width: 700px;
+  margin: auto;
+}
+
+.menu-section {
+  background-color: white;
+  border-left: 5px solid var(--main-color);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.menu-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.menu-section p {
+  color: var(--text-sub);
+  margin: 0;
+  word-wrap: break-word;
+}
+
+.content.active {
+  display: block;
+}
+
+.nav-arrow {
+  font-size: 14px;          /* 화살표 크기 조절 */
+  padding: 4px 8px;         /* 버튼 안 여백 줄이기 */
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.nav-arrow:hover {
+  opacity: 0.7;
+}
+.date-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.nav-arrow {
+  background-color: transparent;
+  border: none;
+  font-size: 1.3em;
+  cursor: pointer;
+}

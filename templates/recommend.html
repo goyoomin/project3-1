@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        {% include "header.html" %}
+        <main>
+            <div class="option">
+                <div class="option-card" onclick="location.href='/map'" style="cursor: pointer;">
+                    <img src="{{ url_for('static', filename='icons/confirmed.png') }}" alt="여행지를 정했어요">
+                    <p>여행지를 정했어요</p>
+                </div>
+                <div class="option-card" onclick="location.href='/chatbot'" style="cursor: pointer;">
+                    <img src="{{ url_for('static', filename='icons/not-confirmed.png') }}" alt="여행지를 정하지 못했어요">
+                    <p>여행지를 정하지 못했어요</p>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

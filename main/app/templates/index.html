@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>캠픽 - 메인</title>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #eaf3ff, #f8faff);
+      font-family: 'Pretendard', sans-serif;
+      color: #2E2E2E;
+    }
+
+    .app-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: #ffffffcc;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .app-logo {
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+      font-size: 20px;
+      gap: 8px;
+    }
+
+    .app-logo img {
+      width: 28px;
+      height: 28px;
+    }
+
+    .profile-section {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .main {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 20px 100px;
+    }
+
+    .date-widget {
+      background: white;
+      border-radius: 16px;
+      padding: 18px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .date-widget h2 {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .date-widget p {
+      font-size: 14px;
+      color: #6b7280;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .tile {
+      background: white;
+      border-radius: 16px;
+      padding: 28px 12px;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .tile:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 14px rgba(0,0,0,0.08);
+    }
+
+    .tile i {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .tile-label {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .tab-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-around;
+      background: #ffffffee;
+      border-top: 1px solid #e5e7eb;
+      padding: 10px 0;
+      backdrop-filter: blur(10px);
+    }
+
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 13px;
+      color: #9AA5B1;
+      text-decoration: none;
+    }
+
+    .tab-item.active {
+      color: #2E2E2E;
+      font-weight: 700;
+    }
+
+    .tab-item i {
+      margin-bottom: 4px;
+    }
+
+    button.logout-btn {
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-bar">
+    <div class="app-logo">
+      <img src="{{ url_for('static', filename='img/campick-logo.png') }}" alt="캠픽 로고" />
+      CAMPICK
+    </div>
+    <div class="profile-section">
+      {% if session['name'] %}
+        <span style="font-size: 14px; font-weight: 500;">👤 {{ session['name'] }}</span>
+      {% endif %}
+      <form action="{{ url_for('login.logout') }}" method="post">
+        <button class="logout-btn" title="로그아웃">로그아웃</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="date-widget">
+      <h2>{{ current_date or "2025년 5월 29일" }}</h2>
+      <p>오늘도 멋진 하루 보내세요 ☀️</p>
+    </div>
+
+    <div class="grid">
+      <!-- 여기 수정됨 -->
+      <a href="{{ url_for('map.show_map') }}" class="tile">
+        <i data-feather="map-pin"></i>
+        <div class="tile-label">지도</div>
+      </a>
+      <a href="{{ url_for('food.index') }}" class="tile">
+        <i data-feather="coffee"></i>
+        <div class="tile-label">학식</div>
+      </a>
+      <a href="{{ url_for('timetable.index') }}" class="tile">
+        <i data-feather="calendar"></i>
+        <div class="tile-label">시간표</div>
+      </a>
+      <a href="{{ url_for('todolist.index') }}" class="tile">
+        <i data-feather="check-square"></i>
+        <div class="tile-label">할일</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <a href="{{ url_for('main.index') }}" class="tab-item active">
+      <i data-feather="home"></i>
+      홈
+    </a>
+    <a href="{{ url_for('notice.index') }}" class="tab-item">
+      <i data-feather="bell"></i>
+      공지
+    </a>
+    <a href="{{ url_for('user.settings') }}" class="tab-item">
+      <i data-feather="user"></i>
+      설정
+    </a>
+  </div>
+
+  <script>
+    feather.replace();
+  </script>
+</body>
+</html>
