@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일정 세부 정보</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        #details-page {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            height: calc(100vh - 100px); /* 헤더 제외 높이 */
+            width: 100%; /* 화면의 90% 너비 */
+            max-width: 1450px; /* 최대 너비 제한 */
+            background-color: #e8f5ff;
+            padding: 40px; /* 내부 여백 확대 */
+            margin: 20px auto; /* 상하 좌우 여백 조정 */
+            box-sizing: border-box; /* 패딩 포함 */
+            border-radius: 15px; /* 모서리 둥글게 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+            overflow: hidden; /* 컨테이너의 초과 내용 숨기기 */
+            justify-content: center; /* 세로 중앙 정렬 */
+            align-items: center; /* 가로 중앙 정렬 */
+        }
+
+        .details-container {
+            width: 90%;
+            max-width: 800px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .details-container h2 {
+            font-size: 24px;
+            color: #3DA9F5;
+            margin-bottom: 20px;
+        }
+
+        .detail {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .detail span {
+            font-weight: bold;
+            color: black;
+        }
+
+        .button-container a {
+            text-decoration: none;
+            background-color: #3DA9F5;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+        }
+
+        .button-container a:hover {
+            background-color: #0077cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% include "header.html" %} <!-- 기존 헤더 스타일 사용 -->
+
+        <!-- 세부 정보 페이지 -->
+        <div id="details-page">
+            <div class="details-container">
+                <h2>{{ schedule['title'] }}</h2>
+                <div class="detail">
+                    <span>날짜:</span> {{ schedule['start_date'] }} ~ {{ schedule['end_date'] }}
+                </div>
+                <div class="detail">
+                    <span>할 일:</span> {{ schedule['details'].get('task', '입력되지 않음') }}
+                </div>
+                <div class="detail">
+                    <span>시간:</span> {{ schedule['details'].get('time', '입력되지 않음') }}
+                </div>
+                <div class="detail">
+                    <span>위치:</span> {{ schedule['details'].get('location', '입력되지 않음') }}
+                </div>
+                <div class="button-container">
+                    <a href="/index">돌아가기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

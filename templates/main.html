@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>메인 페이지</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        // 사용자의 위치 정보 가져오기
+        function geoLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendPosition, showError);
+            } else {
+                document.getElementById('weather').innerHTML =
+                    '<p>이 브라우저는 Geolocation을 지원하지 않습니다.</p>';
+            }
+        }
+
+        // Flask 서버로 위치 데이터 전송
+        function sendPosition(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            fetch(`/weather?lat=${lat}&lon=${lon}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('weather').innerHTML = `<p>${data.error}</p>`;
+                    } else {
+                        document.getElementById('weather').innerHTML = `
+                            <img src="http://openweathermap.org/img/wn/${data.icon}@2x.png" alt="${data.description}" />
+                            <p>도시: ${data.city}</p>
+                            <p>날씨: ${data.description}</p>
+                            <p>온도: ${data.temp}°C</p>
+                            <p>체감 온도: ${data.feels_like}°C</p>
+                            <p>습도: ${data.humidity}%</p>
+                            <p>풍속: ${data.wind_speed}m/s</p>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('weather').innerHTML = `<p>날씨 정보를 가져오는 데 실패했습니다: ${error.message}</p>`;
+                });
+        }
+
+        function showError(error) {
+            let message = '';
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    message = '사용자가 위치 정보 제공을 거부했습니다.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message = '위치 정보를 사용할 수 없습니다.';
+                    break;
+                case error.TIMEOUT:
+                    message = '위치 정보 요청 시간이 초과되었습니다.';
+                    break;
+                default:
+                    message = '알 수 없는 오류가 발생했습니다.';
+            }
+            document.getElementById('weather').innerHTML = `<p>${message}</p>`;
+        }
+
+        // 페이지 로드 시 위치 정보 요청
+        window.onload = geoLocation;
+    </script>
+</head>
+<body>
+    <div class="container">
+        {% include "header.html" %} <!-- 헤더 포함 -->
+
+        <!-- 메인 섹션 -->
+        <section class="main-section">
+            <div class="option">
+                <div class="option-card" onclick="location.href='/recommend'" style="cursor: pointer;">
+                    <img src="{{ url_for('static', filename='icons/ai.png') }}" alt="추천">
+                    <p>여행 코스 추천</p>
+                </div>
+                <div class="option-card" onclick="location.href='/index'" style="cursor: pointer;">
+                    <img src="{{ url_for('static', filename='icons/create.png') }}" alt="내가 만들기">
+                    <p>내가 만들기</p>
+                </div>
+            </div>
+
+            <!-- 날씨 예보 -->
+            <div class="weather">
+                <h2>날씨 | 예보</h2>
+                <div id="weather">
+                    <p>위치 정보를 가져오는 중...</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

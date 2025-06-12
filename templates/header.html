@@ -1,0 +1,45 @@
+
+<nav class="nav-bar">
+    <!-- 로고 추가 -->
+    <a href="/" class="logo">
+        <img src="{{ url_for('static', filename='icons/logo.png') }}" alt="로고" class="logo-image">
+        
+    </a>
+    <!-- 일정 관리 및 로그인/로그아웃 링크 -->
+    <div class="nav-links">
+        <a href="/index" class="nav-link">일정관리</a> <!-- 일정 관리 링크 -->
+        <span>|</span>
+        <a href="#" id="authButton" class="nav-link">
+            {% if user %}
+            로그아웃
+            {% else %}
+            로그인
+            {% endif %}
+        </a>
+    </div>
+</nav>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const authButton = document.getElementById("authButton");
+
+        {% if user %}
+        // 로그아웃 동작
+        authButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            fetch("/logout", { method: "POST" })
+                .then(() => {
+                    alert("로그아웃되었습니다.");
+                    location.reload(); // 페이지 새로고침
+                })
+                .catch((error) => console.error("로그아웃 실패:", error));
+        });
+        {% else %}
+        // 로그인 동작
+        authButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            location.href = "/login";
+        });
+        {% endif %}
+    });
+</script>
