@@ -1,15 +1,19 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, session
 import json, os
 from datetime import datetime
-import main.app.routes.timetable_routes as timetable_routes  # ✅ 실시간 참조
+
+# ⬇️ 학식 관련 서비스 가져오기
+from main.app.services.food_service import get_recommended_foods, crawl_food_menu
 
 main_routes = Blueprint('main', __name__)
 
 @main_routes.route("/")
 def index():
-    today_str = datetime.now().strftime("%Y-%m-%d")
-    today_display = datetime.now().strftime("%Y년 %m월 %d일")
+    # 오늘 날짜
+    today_str = datetime.today().strftime("%Y-%m-%d")
+    today_display = datetime.today().strftime("%Y년 %m월 %d일")
 
+    # ✅ 할 일 로드
     basedir = os.path.dirname(os.path.abspath(__file__))
     todo_path = os.path.join(basedir, "..", "tasks.json")
 
@@ -24,9 +28,9 @@ def index():
     today_progress = round((today_done / today_total) * 100) if today_total else 0
     top_urgent_tasks = [t for t in today_tasks if t.get("priority") == "긴급"][:3]
 
-    # ✅ current_semester를 선언해야 함!
-    semester = timetable_routes.SEMESTERS[-1]
-    blocks = timetable_routes.build_blocks(semester, row_height=60, header_height=84)
+    # ✅ 학식 정보 불러오기
+    food_menus = crawl_food_menu(today_str)
+    recommended_foods = get_recommended_foods(today_str)
 
     return render_template(
         "index.html",
@@ -35,7 +39,6 @@ def index():
         today_done=today_done,
         today_progress=today_progress,
         top_urgent_tasks=top_urgent_tasks,
-        days=timetable_routes.DAYS,
-        hours=timetable_routes.HOURS,
-        blocks=blocks
+        food_menus=food_menus,
+        recommended_foods=recommended_foods
     )

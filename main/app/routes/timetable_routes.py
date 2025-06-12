@@ -38,7 +38,8 @@ def assign_color(subject):
         subject_colors[subject] = COLOR_PALETTE[len(subject_colors) % len(COLOR_PALETTE)]
     return subject_colors[subject]
 
-def build_blocks(semester, row_height=60, header_height=60):
+def build_blocks(semester, row_height=60, header_height=60, day_col_width=110):
+
     blocks = []
     for c in SCHEDULE:
         if c.get("semester") != semester:
