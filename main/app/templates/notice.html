@@ -1,11 +1,188 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>공지사항</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>캠픽 - 공지사항</title>
+  <script src="https://unpkg.com/feather-icons"></script>
+  <style>
+    :root {
+      --main: #AFCBFF;
+      --bg: linear-gradient(135deg, #eaf3ff, #f8faff);
+      --text: #2E2E2E;
+      --border: #E2E6EE;
+      --card: #ffffff;
+      --link: #7476f9;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Pretendard', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* 상단 앱바 */
+    .app-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .app-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .app-logo img {
+      width: 26px;
+      height: 26px;
+    }
+
+    .main-back-btn {
+      background: #f3f4f6;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: #374151;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .main-back-btn:hover {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px 20px 100px;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      margin-bottom: 16px;
+    }
+
+    .notice {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .notice h2 {
+      margin-top: 0;
+      color: var(--main);
+      font-size: 1.5em;
+    }
+
+    .meta {
+      font-size: 0.9em;
+      color: #9AA5B1;
+      margin-bottom: 16px;
+    }
+
+    .notice ol,
+    .notice ul {
+      margin: 0 0 16px 20px;
+    }
+
+    .notice li {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .attachments ul {
+      list-style: disc;
+      margin-left: 20px;
+    }
+
+    .attachments a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    .attachments a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-  <h1>📢 공지사항</h1>
-  <p>아직 등록된 공지가 없습니다.</p>
+  <!-- ✅ 상단바 -->
+  <div class="app-bar">
+    <div class="app-logo">
+      <img src="{{ url_for('static', filename='img/campick-logo.png') }}" alt="로고" />
+      CAMPICK
+    </div>
+    <a href="{{ url_for('main.index') }}" class="main-back-btn">
+      <i data-feather="arrow-left-circle"></i> 메인으로
+    </a>
+  </div>
+
+  <!-- ✅ 공지사항 본문 -->
+  <div class="container">
+    <h1>📢 공지사항</h1>
+    <section class="notice">
+      <h2>2025학년도 2학기 국가근로장학금 1차 신청 안내</h2>
+      <div class="meta">
+        작성자 : 학생 취업과 | 작성일 : 2025.05.20 오후 3:43:51 | 대상 : 공통 | 조회수 : 2455 | HelloLMS Push : 사용
+      </div>
+      <p>2025학년도 2학기 1차 국가근로장학금 학생 신청기간을 안내하오니, 국가근로를 희망하는 학생들께서는 기한 내 신청하여 주시기 바랍니다.</p>
+      <ol>
+        <li>
+          <strong>신청기간</strong>: 2025. 5. 23.(금) 9시 ~ 6. 23.(월) 18시<br>
+          ※ 주말 및 공휴일 포함 신청기간 내 24시간 신청 가능(단, 신청마감일 제외)<br>
+          ※ 서류제출 및 가구원 동의기간: 2025. 5. 23.(금) 9시 ~ 2025. 6. 30.(월) 18시
+        </li>
+        <li>
+          <strong>신청방법</strong>: 한국장학재단 홈페이지 및 모바일 앱을 이용하여 신청<br>
+          - 홈페이지: <a href="http://www.kosaf.go.kr" target="_blank" rel="noopener">http://www.kosaf.go.kr</a><br>
+          - 모바일: "한국장학재단" 앱 신청
+        </li>
+        <li>
+          <strong>신청대상</strong>: 2025학년도 2학기 정규학기 재학생
+        </li>
+        <li>
+          <strong>기타사항</strong>
+          <ul>
+            <li>2025년 동계방학 집중근로 프로그램 참여 희망 시, 반드시 학생신청기간(1, 2차)에 신청 필요</li>
+            <li>학자금 지원구간 산정 후 선발 및 근로 가능하므로 빠른 신청 요망</li>
+          </ul>
+        </li>
+        <li>
+          <strong>문의처</strong>: 한국장학재단 ☎ 1599-2290
+        </li>
+      </ol>
+      <p>기타 자세한 내용은 붙임의 매뉴얼을 참고하시기 바랍니다.</p>
+      <div class="attachments">
+        <p><strong>첨부파일(2개)</strong></p>
+        <ul>
+          <li><a href="#">[파일1] 국가근로장학금_학생매뉴얼.pdf</a></li>
+          <li><a href="#">[파일2] 국가근로장학금_신청안내자료.hwp</a></li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    feather.replace();
+  </script>
 </body>
 </html>

@@ -77,6 +77,28 @@
       color: #111827;
     }
 
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 24px 20px 100px;
+    }
+
+    .top-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin: 0;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .main {
       max-width: 700px;
       margin: 0 auto;
@@ -250,7 +272,7 @@
   <div class="app-bar">
     <div class="app-logo">
       <img src="{{ url_for('static', filename='img/campick-logo.png') }}" alt="캠픽 로고" />
-      시간표
+      CAMPICK
     </div>
     <a href="{{ url_for('main.index') }}" class="main-back-btn">
       <i data-feather="arrow-left-circle"></i> 메인으로
@@ -258,55 +280,61 @@
   </div>
 
   <div class="container">
-    <h1><i data-feather="calendar"></i> 나의 시간표</h1>
+    <div class="top-actions">
+      <h1><i data-feather="calendar"></i> 나의 시간표</h1>
+    </div>
 
     <!-- 학기/수업 추가 박스 -->
     <div class="box">
-      <div class="flex">
-        <form method="get" action="{{ url_for('timetable.index') }}">
-          <select name="semester" onchange="this.form.submit()">
-            {% for s in semesters %}
-            <option value="{{ s }}" {% if s==current_semester %}selected{% endif %}>{{ s }}</option>
-            {% endfor %}
-          </select>
-        </form>
-        <a href="javascript:void(0)" class="toggle-btn" onclick="toggleSemesterTools()">
-          <i data-feather="settings"></i> 학기 관리
-        </a>
-        <a href="javascript:void(0)" class="toggle-btn" onclick="toggleCourseForm()">
-          <i data-feather="plus-circle"></i> 수업 추가
-        </a>
-      </div>
+  <!-- 상단 버튼: 학기 관리 / 수업 추가 -->
+  <div class="flex" style="gap: 12px; margin-bottom: 16px;">
+    <form method="get" action="{{ url_for('timetable.index') }}">
+      <select name="semester" onchange="this.form.submit()" style="min-width: 120px;">
+        {% for s in semesters %}
+        <option value="{{ s }}" {% if s==current_semester %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </form>
 
-      <div id="semester-tools" style="display:none;" class="flex">
-        <form method="post" action="{{ url_for('timetable.add_semester') }}">
-          <input type="text" name="new_semester" placeholder="예: 2026-1" required>
-          <button class="add-btn" type="submit"><i data-feather="plus-circle"></i> 추가</button>
-        </form>
-        <form method="post" action="{{ url_for('timetable.delete_semester') }}">
-          <select name="del_semester">
-            {% for s in semesters if s != current_semester %}
-            <option value="{{ s }}">{{ s }}</option>
-            {% endfor %}
-          </select>
-          <button class="gpt-btn" type="submit"><i data-feather="trash-2"></i> 삭제</button>
-        </form>
-      </div>
+        <button class="toggle-btn" onclick="toggleSemesterTools()" type="button" style="flex:1;">
+      <i data-feather="settings"></i> 학기 관리
+    </button>
 
-      <div id="course-form-box" style="display:none;" class="flex">
-        <form class="flex" action="{{ url_for('timetable.add_course') }}" method="post">
-          <input name="subject" placeholder="과목명" required>
-          <input name="prof" placeholder="교수명">
-          <input name="room" placeholder="강의실">
-          <select name="day">
-            {% for d in days %}<option value="{{ d }}">{{ d }}</option>{% endfor %}
-          </select>
-          <input name="start" placeholder="09:00" required>
-          <input name="end" placeholder="10:30" required>
-          <button class="add-btn" type="submit"><i data-feather="plus-circle"></i> 추가</button>
-        </form>
-      </div>
-    </div>
+    <button class="toggle-btn" onclick="toggleCourseForm()" type="button" style="flex:1;">
+      <i data-feather="plus-circle"></i> 수업 추가
+    </button>
+  </div>
+
+      <div id="semester-tools" style="display:none; background: #f9fbff; padding: 16px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 16px;">
+    <form method="post" action="{{ url_for('timetable.add_semester') }}" style="display:flex; gap:12px; flex-wrap:wrap; align-items: center;">
+      <input type="text" name="new_semester" placeholder="예: 2026-1" required style="flex:1;">
+      <button class="add-btn" type="submit"><i data-feather="plus-circle"></i> 추가</button>
+    </form>
+
+    <form method="post" action="{{ url_for('timetable.delete_semester') }}" style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap; align-items: center;">
+      <select name="del_semester" style="flex:1;">
+        {% for s in semesters if s != current_semester %}
+        <option value="{{ s }}">{{ s }}</option>
+        {% endfor %}
+      </select>
+      <button class="gpt-btn" type="submit"><i data-feather="trash-2"></i> 삭제</button>
+    </form>
+  </div>
+
+      <div id="course-form-box" style="display:none; background: #f9fbff; padding: 16px; border-radius: 12px; border: 1px solid var(--border);">
+    <form class="flex" action="{{ url_for('timetable.add_course') }}" method="post" style="flex-wrap: wrap; gap: 12px;">
+      <input name="subject" placeholder="과목명" required style="flex:1 1 150px;">
+      <input name="prof" placeholder="교수명" style="flex:1 1 150px;">
+      <input name="room" placeholder="강의실" style="flex:1 1 100px;">
+      <select name="day" style="flex:1 1 100px;">
+        {% for d in days %}<option value="{{ d }}">{{ d }}</option>{% endfor %}
+      </select>
+      <input name="start" type="time" step="600" placeholder="09:00" required>
+      <input name="end" type="time" step="600" placeholder="10:30" required>
+      <button class="add-btn" type="submit"><i data-feather="plus-circle"></i> 추가</button>
+    </form>
+  </div>
+</div>
 
     <!-- 시간표 그리드 + 블록 -->
     <div class="box">
@@ -340,51 +368,69 @@
 
     <!-- 주간 학습 플래너 -->
     <div class="box">
-      <h2><i data-feather="edit-2"></i> 주간 학습 플래너</h2>
-    
+  <h2 style="display:flex; align-items:center; gap:8px; font-size:20px; margin-bottom:20px;">
+    <i data-feather="edit-2"></i> 주간 학습 플래너
+  </h2>
+
       <!-- 할 일 추가 폼 -->
-      <form class="flex" action="{{ url_for('timetable.add_plan') }}" method="post">
-        <input name="plan" placeholder="할 일 입력" required>
-        <input type="date" name="due">
-        <button class="add-btn" type="submit"><i data-feather="plus-circle"></i> 추가</button>
-      </form>
-    
-      <!-- GPT 추천 폼 -->
-      <form class="flex" action="{{ url_for('timetable.gpt') }}" method="post">
-        <button class="gpt-btn">
-          <i data-feather="zap"></i> GPT 추천
-        </button>
-      </form>
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+    <!-- 할 일 추가 -->
+    <form class="flex" action="{{ url_for('timetable.add_plan') }}" method="post"
+      style="background: #f9fbff; border: 1px solid var(--border); border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+      <input name="plan" placeholder="할 일 입력" required style="flex: 2;">
+      <input type="date" name="due" style="flex: 1;">
+      <button class="add-btn" type="submit"><i data-feather="plus-circle"></i> 추가</button>
+    </form>
+
+    <!-- GPT 추천 -->
+    <form action="{{ url_for('timetable.gpt') }}" method="post"
+      style="display:flex; justify-content:center;">
+      <button class="gpt-btn" style="width:100%; max-width:300px; justify-content:center;">
+        <i data-feather="zap"></i> GPT 추천 받기
+      </button>
+    </form>
+  </div>
     
       <!-- 플래너 리스트 -->
-      <ul style="list-style:none; padding:0; margin-top:16px;">
-        {% for p in plans %}
-        <li data-id="{{ p.id }}" class="{% if p.done %}task-done{% endif %}" style="background:#fff; padding:12px 16px; border-radius:12px; margin-bottom:10px;
-                       display:flex; align-items:center; gap:10px; font-size:14px;
-                       box-shadow:0 2px 8px rgba(0,0,0,0.04);">
-          <!-- 체크박스 + 텍스트 + (마감일) -->
-          <form action="{{ url_for('timetable.plan_toggle', plan_id=p.id) }}" method="post" style="margin:0; flex-grow:1;">
-            <label style="display:flex; align-items:center; gap:8px; width:100%;">
-              <input type="checkbox" {% if p.done %}checked{% endif %} onchange="this.form.submit()">
-              <span style="{% if p.done %}text-decoration:line-through; color:var(--txt-sub);{% endif %}">
-                {{ p.text }}
-              </span>
-              {% if p.due %}
-              <div class="d-day">({{ p.due }})</div>
-              {% endif %}
-            </label>
-          </form>
+      <ul style="list-style: none; padding: 0; margin-top: 24px;">
+    {% for p in plans %}
+    <li data-id="{{ p.id }}" class="{% if p.done %}task-done{% endif %}" style="
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-left: 6px solid {{ 'var(--point)' if not p.done else '#ccc' }};
+        padding: 16px 20px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+        transition: all 0.2s ease;
+      ">
+      <form action="{{ url_for('timetable.plan_toggle', plan_id=p.id) }}" method="post"
+        style="margin: 0; flex-grow: 1;">
+        <label style="display: flex; align-items: center; gap: 12px; width: 100%;">
+          <input type="checkbox" {% if p.done %}checked{% endif %} onchange="this.form.submit()" style="transform: scale(1.2);">
+          <div style="flex-grow:1;">
+            <span style="{% if p.done %}text-decoration:line-through; color:var(--txt-sub);{% endif %} font-weight:500;">
+              {{ p.text }}
+            </span>
+            {% if p.due %}
+            <div class="d-day">({{ p.due }})</div>
+            {% endif %}
+          </div>
+        </label>
+      </form>
 
-          
           <!-- 삭제 버튼 (오른쪽 끝) -->
-          <form action="{{ url_for('timetable.delete_plan', plan_id=p.id) }}" method="post" style="margin:0; margin-left:auto;">
-            <button class="toggle-btn" type="submit">✕</button>
-          </form>
-
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
+          <form action="{{ url_for('timetable.delete_plan', plan_id=p.id) }}" method="post"
+        style="margin:0;">
+        <button class="toggle-btn" type="submit">✕</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
 
     <div class="calendar-link">
       <a href="{{ url_for('todolist.index') }}"><i data-feather="list"></i> To Do List 보기</a>
