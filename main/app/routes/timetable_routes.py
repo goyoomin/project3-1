@@ -38,16 +38,18 @@ def assign_color(subject):
         subject_colors[subject] = COLOR_PALETTE[len(subject_colors) % len(COLOR_PALETTE)]
     return subject_colors[subject]
 
-def build_blocks(semester):
-    HEADER_PX = 60
+def build_blocks(semester, row_height=60, header_height=60):
     blocks = []
     for c in SCHEDULE:
         if c.get("semester") != semester:
             continue
         h1, m1 = map(int, c["start"].split(":"))
         h2, m2 = map(int, c["end"].split(":"))
-        start_px  = HEADER_PX + (h1 - HOURS[0]) * 60 + m1
-        height_px = (h2 - HOURS[0]) * 60 + m2 - ((h1 - HOURS[0]) * 60 + m1)
+        
+        # 위치 계산
+        start_px = header_height + (h1 - HOURS[0]) * row_height + m1
+        height_px = (h2 - HOURS[0]) * row_height + m2 - ((h1 - HOURS[0]) * row_height + m1)
+
         if height_px <= 0:
             continue
         blocks.append({
@@ -65,6 +67,7 @@ def build_blocks(semester):
             "end": c["end"]
         })
     return blocks
+
 
 def gpt_generate(prompt: str) -> list[str]:
     """Cohere Chat API로 학습 계획 5개를 받아 문자열 리스트로 반환"""

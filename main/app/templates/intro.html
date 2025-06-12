@@ -9,27 +9,37 @@
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
+      height: 100vh;
       background-color: #F8FAFC;
       font-family: 'Pretendard', sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+
+    .wrapper {
+      display: flex;
       flex-direction: column;
+      align-items: center;
       text-align: center;
-      color: #2E2E2E;
+      padding: 32px;
+      max-width: 400px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .logo {
-      width: 120px;
-      margin-bottom: 20px;
+      width: 100px;
+      margin-bottom: 24px;
       animation: fadeIn 1s ease-out forwards;
     }
 
     .intro-title {
       font-size: clamp(36px, 5vw, 48px);
-      font-weight: 800;
+      font-weight: 900;
+      letter-spacing: -1px;
       margin-bottom: 16px;
+      color: #2E2E2E;
       opacity: 0;
       animation: fadeIn 1s ease-out forwards;
       animation-delay: 0.3s;
@@ -37,26 +47,27 @@
 
     .intro-sub {
       font-size: clamp(16px, 2vw, 20px);
-      color: #9AA5B1;
-      margin-bottom: 40px;
-      min-height: 24px;
+      color: #64748B;
+      font-family: 'Pretendard', monospace;
+      margin-bottom: 48px;
+      border-right: 2px solid #94a3b8;
       white-space: nowrap;
       overflow: hidden;
-      border-right: 2px solid #9AA5B1;
-      font-family: 'Pretendard', monospace;
+      min-height: 24px;
     }
 
     .start-button {
       background-color: #AFCBFF;
       color: #2E2E2E;
-      font-weight: bold;
-      padding: 16px 32px;
-      border-radius: 32px;
+      font-weight: 600;
+      padding: 16px 36px;
+      font-size: 18px;
       border: none;
-      font-size: clamp(16px, 2vw, 18px);
+      border-radius: 9999px;
       cursor: pointer;
-      margin-bottom: 20px;
-      transition: background-color 0.2s ease;
+      white-space: nowrap;
+      box-shadow: 0 8px 16px rgba(175, 203, 255, 0.4);
+      transition: transform 0.2s ease, background-color 0.3s ease;
       opacity: 0;
       animation: fadeIn 1s ease-out forwards;
       animation-delay: 0.8s;
@@ -64,12 +75,15 @@
 
     .start-button:hover {
       background-color: #94bfff;
+      transform: translateY(-2px);
     }
 
     .login-link {
-      font-size: 15px;
+      margin-top: 20px;
+      font-size: 14px;
       color: #9AA5B1;
-      text-decoration: underline;
+      text-decoration: none;
+      transition: color 0.3s;
       opacity: 0;
       animation: fadeIn 1s ease-out forwards;
       animation-delay: 1.2s;
@@ -77,41 +91,51 @@
 
     .login-link:hover {
       color: #2E2E2E;
-      text-decoration: none;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @media (max-width: 480px) {
       .start-button {
-        width: 90%;
+        width: 100%;
+      }
+
+      .intro-sub {
+        font-size: 16px;
       }
     }
   </style>
 </head>
 <body>
+  <div class="wrapper">
+    <!-- ✅ 로고 -->
+    <img src="{{ url_for('static', filename='img/campick-logo.png') }}" alt="Campick 로고" class="logo" />
 
-  <!-- ✅ 로고 이미지 -->
-  <img src="{{ url_for('static', filename='img/campick-logo.png') }}" alt="Campick 로고" class="logo" />
+    <!-- ✅ 타이틀 -->
+    <div class="intro-title">Campick</div>
 
-  <!-- ✅ 타이틀 -->
-  <div class="intro-title">Campick</div>
+    <!-- ✅ 타이핑 문구 -->
+    <div class="intro-sub" id="typing-text"></div>
 
-  <!-- ✅ 타이핑 효과 영역 -->
-  <div class="intro-sub" id="typing-text"></div>
+    <!-- ✅ 버튼 -->
+    <form action="{{ url_for('main.index') }}">
+      <button type="submit" class="start-button">캠픽 체험하기</button>
+    </form>
 
-  <!-- ✅ 시작 버튼 -->
-  <form action="{{ url_for('main.index') }}">
-    <button type="submit" class="start-button">캠픽 체험하기</button>
-  </form>
+    <!-- ✅ 로그인 링크 -->
+    <a href="{{ url_for('login.login') }}" class="login-link">이미 캠픽 회원이라면 로그인</a>
+  </div>
 
-  <!-- ✅ 로그인 링크 -->
-  <a href="{{ url_for('login.login') }}" class="login-link">이미 캠픽 회원이라면 로그인</a>
-
-  <!-- ✅ 반복 타이핑 효과 스크립트 (지우기 없음) -->
+  <!-- ✅ 타이핑 효과 스크립트 -->
   <script>
     const typingElement = document.getElementById("typing-text");
     const typingTexts = [
@@ -133,7 +157,7 @@
           charIndex = 0;
           textIndex = (textIndex + 1) % typingTexts.length;
           type();
-        }, 1000); // 문장 유지 시간
+        }, 1000);
       }
     }
 
