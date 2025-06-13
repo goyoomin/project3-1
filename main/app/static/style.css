@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 :root {
   --main: #AFCBFF;
   --main-dark: #94bfff;
@@ -14,31 +13,10 @@ body {
   color: var(--text);
 }
 /* ------ 상단바 ------ */
-=======
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/pretendard.css');
-
-/* 초기화 */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html, body {
-  height: 100%;
-  font-family: 'Pretendard', sans-serif;
-  background: linear-gradient(135deg, #eaf3ff, #f8faff);
-  color: #2E2E2E;
-  -webkit-text-size-adjust: 100%;
-}
-
-/* 공통 상단바 */
->>>>>>> 539c636b2f2b997008e72731aa2c29204432e220
 .app-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-<<<<<<< HEAD
   padding: 16px 28px;   /* (★) 여기 패딩만 살짝 키워주면 더 넉넉해짐 */
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
@@ -56,36 +34,10 @@ html, body {
   font-size: 20px;     /* (★) 20px로 통일: 더 시원시원함 */
   letter-spacing: 0.5px;
 }
-=======
-  padding: 16px 24px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  height: 64px;
-  min-height: 64px;
-}
-
-.app-logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 700;
-  font-size: 1.3rem;
-  color: #2E2E2E;
-  white-space: nowrap;
-  min-width: 120px;
-  height: 64px;
-}
-
->>>>>>> 539c636b2f2b997008e72731aa2c29204432e220
 .app-logo img {
   width: 32px;
   height: 32px;
   object-fit: contain;
-<<<<<<< HEAD
 }
 .main-back-btn {
   background: #f3f4f6;
@@ -149,64 +101,6 @@ html, body {
 
 
 /* ------ MAP 페이지: 지도 영역 ------ */
-=======
-  margin-right: 4px;
-  vertical-align: middle;
-}
-
-/* 메인으로 버튼 */
-.main-back-btn {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 20px;
-  font-size: 15px;
-  background: #ffffff;
-  border: 2px solid #AFCBFF;
-  border-radius: 12px;
-  font-weight: 600;
-  color: #2E2E2E;
-  text-decoration: none;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.main-back-btn:hover {
-  background: #F0F7FF;
-  border-color: #94bfff;
-  color: #1f2937;
-}
-
-/* 공통 버튼 */
-.button,
-.find-path-btn {
-  background-color: #AFCBFF;
-  border: none;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-  transition: background 0.2s ease;
-}
-
-.button:hover,
-.find-path-btn:hover {
-  background-color: #94bfff;
-}
-
-/* 지도 전체 영역 */
-body.map-page {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-/* 지도 영역 */
->>>>>>> 539c636b2f2b997008e72731aa2c29204432e220
 #map-container {
   flex-grow: 1;
   width: 100%;
@@ -216,18 +110,20 @@ body.map-page {
   width: 100%;
   height: 100%;
 }
-<<<<<<< HEAD
 @media (max-width: 480px) {
   #map {
     height: 500px;
   }
+  
+}
+body.map-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
-/* ------ MAP 페이지: 경로 안내 박스 ------ */
-=======
 
-/* 경로 정보 박스 */
->>>>>>> 539c636b2f2b997008e72731aa2c29204432e220
+/* ------ MAP 페이지: 경로 안내 박스 ------ */
 #route-info-box {
   width: 95%;
   max-width: 975px;
@@ -238,16 +134,12 @@ body.map-page {
   display: flex;
   justify-content: space-between;
   align-items: center;
-<<<<<<< HEAD
   justify-content: flex-start;
   gap: 36px;
   font-size: 0.80em;
 }
 #route-info-box > div {
   white-space: nowrap;
-=======
-  font-size: 1rem;
->>>>>>> 539c636b2f2b997008e72731aa2c29204432e220
 }
 .route-label {
   font-weight: 600;
@@ -258,7 +150,6 @@ body.map-page {
   color: #222;
 }
 
-<<<<<<< HEAD
 /* ------ MAP 페이지: 오버레이 ------ */
 .custom-overlay-box {
   width: 700px !important;
@@ -271,15 +162,6 @@ body.map-page {
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   position: relative;
-=======
-/* 오버레이 */
-.custom-overlay-box {
-  width: 700px !important;
-  min-width: 180px;
-  word-break: break-word !important;
-  background: #fff;
-  padding: 20px 20px 15px 20px !important;
->>>>>>> 539c636b2f2b997008e72731aa2c29204432e220
 }
 .overlay-title {
   font-size: 1.07em;
@@ -297,10 +179,6 @@ body.map-page {
   display: flex;
   gap: 10px;
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> 539c636b2f2b997008e72731aa2c29204432e220
 .close-btn {
   position: absolute;
   top: 7px;
@@ -314,7 +192,6 @@ body.map-page {
   color: #f55555;
 }
 
-<<<<<<< HEAD
 /* ------ MAP 페이지: 건물(빌딩) 리스트 ------ */
 .building-header {
   display: flex;
@@ -408,26 +285,81 @@ h1, #title {
   text-align: center;
   font-weight: bold;
   letter-spacing: 2px;
-=======
-/* 반응형 */
-@media (max-width: 480px) {
-  .app-bar {
-    padding: 16px;
-  }
+}
 
-  .main-back-btn {
-    padding: 8px 14px;
-    font-size: 14px;
-  }
+.external-links {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);   /* 항상 2열 */
+  gap: 20px 24px;                          /* 위아래/좌우 간격 */
+  justify-items: center;
+  max-width: 400px;
+  margin: 0 auto;
+}
 
-  #map {
-    height: 200px;
-  }
 
-  #route-info-box {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
->>>>>>> 539c636b2f2b997008e72731aa2c29204432e220
+.external-links a {
+  text-align: center;
+  text-decoration: none;
+}
+
+.external-links img {
+  height: 32px;
+  margin-bottom: 6px;
+}
+
+.external-links span {
+  display: block;
+  color: #222;
+  font-size: 0.95em;
+}
+
+
+.link-card {
+  width: 100%;
+  max-width: 140px;                /* 너무 넓어지지 않게 제한 */
+  aspect-ratio: 1 / 1.1;           /* 높이도 일정하게 (모바일 대응 매우 안정) */
+  background: white;
+  border-radius: 16px;
+  padding: 20px 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+
+.link-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.link-card img {
+  height: 64px;
+  object-fit: contain;
+  margin-bottom: 8px;
+  max-width: 70%;
+}
+
+.link-card span {
+  font-size: 14px;
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.link-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.3;
+  color: #1e293b;
+  word-break: keep-all;
+}
+
+.external-links-section {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid #E2E6EE; /* ✅ 연한 구분선 */
 }

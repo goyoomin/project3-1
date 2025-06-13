@@ -10,6 +10,8 @@
       margin: 0;
       padding: 0;
       height: 100vh;
+      width: 100vw;            /* 배경 너비 고정 */
+      overflow: hidden;        /* 스크롤 생기지 않도록 방지 */
       background-color: #F8FAFC;
       font-family: 'Pretendard', sans-serif;
       display: flex;
@@ -51,9 +53,11 @@
       font-family: 'Pretendard', monospace;
       margin-bottom: 48px;
       border-right: 2px solid #94a3b8;
-      white-space: nowrap;
-      overflow: hidden;
       min-height: 24px;
+      /* 제거하거나 조정 */
+      white-space: normal;
+      overflow: hidden;
+      text-align: center;
     }
 
     .start-button {
