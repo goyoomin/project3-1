@@ -124,6 +124,6 @@
 
 ## 시연 영상
 
-[[(https://youtube.com/shorts/S0WYMJdQDq0)]()]](https://youtube.com/shorts/S0WYMJdQDq0)
+(https://youtube.com/shorts/S0WYMJdQDq0)]()]](https://youtube.com/shorts/S0WYMJdQDq0)
 
 ---
