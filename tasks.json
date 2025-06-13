@@ -6,5 +6,13 @@
     "memo": "ppt만들기",
     "done": false,
     "dday": 2
+  },
+  {
+    "title": "과제 연구 계획서 작성하기",
+    "due": "2025-06-13",
+    "priority": "보통",
+    "memo": "",
+    "done": false,
+    "dday": 1
   }
 ]
