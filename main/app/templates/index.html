@@ -111,8 +111,44 @@
     }
 
     .date-nav {
-      text-align: center;
-      margin: 10px 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .nav-circle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #64748b;
+      padding: 4px;
+      transition: color 0.2s ease;
+    }
+
+    .nav-circle:hover {
+      color: #1e293b;
+    }
+
+    .date-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .nav-icon {
+      background: none;
+      border: none;
+      color: #475569;
+      font-size: 16px;
+      padding: 6px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .nav-icon:hover {
+      color: #1e293b;
     }
 
     .nav-arrow {
@@ -156,8 +192,22 @@
     }
 
     .menu-toggle {
-      text-align: center;
-      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .menu-tab {
+      background: none;
+      border: 1px solid var(--border);
+      color: #1e293b;
+      font-weight: 500;
+      font-size: 14px;
+      padding: 8px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
     }
 
     .menu-toggle button {
@@ -172,6 +222,48 @@
 
     .menu-toggle button:hover {
       background: #e5e7eb;
+    }
+
+    .menu-tab:hover {
+      background: #f1f5f9;
+    }
+
+    .menu-tab.active {
+      background: #1e293b;
+      color: white;
+      border-color: #1e293b;
+    }
+
+    .menu-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .menu-card {
+      background: white;
+      border-radius: 14px;
+      padding: 16px 18px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .menu-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .menu-card p {
+      margin: 0;
+      font-size: 14px;
+      color: #374151;
+      line-height: 1.5;
     }
 
     button.logout-btn {
@@ -189,6 +281,8 @@
       background: #e5e7eb;
       color: #111827;
     }
+
+
   </style>
 </head>
 <body>
@@ -231,42 +325,50 @@
     <h2 class="section-title">오늘의 학식</h2>
 
     <div class="date-nav">
-      <button class="nav-arrow left-arrow">◀</button>
-      <span id="date-display" style="font-weight:bold;"></span>
-      <button class="nav-arrow right-arrow">▶</button>
+      <button class="nav-circle" id="prev-day" aria-label="이전 날짜">
+        <i data-feather="arrow-left-circle"></i>
+      </button>
+      <span id="date-display" class="date-label">2025-06-12</span>
+      <span id="date-display" class="date-label"></span>
+      <button class="nav-circle" id="next-day" aria-label="다음 날짜">
+        <i data-feather="arrow-right-circle"></i>
+      </button>
     </div>
 
     <div class="menu-toggle">
-      <button onclick="showSection('hak')">학식</button>
-      <button onclick="showSection('gi')">기식</button>
+      <button class="menu-tab active" onclick="showSection('hak')">학식</button>
+      <button class="menu-tab" onclick="showSection('gi')">기식</button>
     </div>
 
     <div id="hak" class="content">
       <div class="menu-section">
-        <div class="menu-title">🍱 맛난한끼</div>
-        <p id="matnanhan-ggi">{{ food_menus["맛난한끼"]|safe }}</p>
-      </div>
-      <div class="menu-section">
-        <div class="menu-title">🥗 건강한한끼</div>
-        <p id="geonganghan-ggi">{{ food_menus["건강한끼"]|safe }}</p>
+        <div class="menu-card">
+          <div class="menu-title">🍱 맛난한끼</div>
+          <p id="matnanhan-ggi">{{ food_menus["맛난한끼"]|safe }}</p>
+        </div>
+        <div class="menu-card">
+          <div class="menu-title">🥗 건강한한끼</div>
+          <p id="geonganghan-ggi">{{ food_menus["건강한끼"]|safe }}</p>
+        </div>
       </div>
     </div>
 
     <div id="gi" class="content" style="display:none;">
       <div class="menu-section">
-        <div class="menu-title">🌅 아침</div>
-        <p id="morning">{{ recommended_foods["아침"]|safe }}</p>
-      </div>
-      <div class="menu-section">
-        <div class="menu-title">🌞 점심</div>
-        <p id="lunch">{{ recommended_foods["점심"]|safe }}</p>
-      </div>
-      <div class="menu-section">
-        <div class="menu-title">🌙 저녁</div>
-        <p id="dinner">{{ recommended_foods["저녁"]|safe }}</p>
+        <div class="menu-card">
+          <div class="menu-title">🌅 아침</div>
+          <p id="morning">{{ recommended_foods["아침"]|safe }}</p>
+        </div>
+        <div class="menu-card">
+          <div class="menu-title">🌞 점심</div>
+          <p id="lunch">{{ recommended_foods["점심"]|safe }}</p>
+        </div>
+        <div class="menu-card">
+          <div class="menu-title">🌙 저녁</div>
+          <p id="dinner">{{ recommended_foods["저녁"]|safe }}</p>
+        </div>
       </div>
     </div>
-  </div>
 
   <div class="tab-bar">
     <a href="{{ url_for('main.index') }}" class="tab-item active">
